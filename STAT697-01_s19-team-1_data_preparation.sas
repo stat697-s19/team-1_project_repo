@@ -17,8 +17,9 @@ Go attributes such as Base Stats, HP, Attach, Stamina, CP, etc.
 
 [Data Source] The file https://docs.google.com/spreadsheets/d/1UoCZzfsMNIhDW2YcR
 q9nuzDrDiOvtJ6MeAbN0yvtPOQ/edit#gid=1171406684 was downloaded and edited to 
-only contain pertinent columns related to the Pokemon Go mobile game and removed
-special characters from the unique key in order to join the other data sources.
+only contain pertinent columns related to the Pokemon Go mobile game, removed
+special characters from the unique key in order to join the other data sources,
+and removed spaces from column names.
 
 [Data Dictionary] https://docs.google.com/spreadsheets/d/1UoCZzfsMNIhDW2YcRq9n
 uzDrDiOvtJ6MeAbN0yvtPOQ/edit#gid=1171406684
@@ -74,9 +75,10 @@ distance to pokestops/gyms and additional data about appearances.
 [Number of Features] 209
 
 [Data Source] The file was downloaded from 
-https://www.kaggle.com/semioniy/predictemall and where the date of appearance was 
-converted from datestamp using Excel substring and date functions and only 
-sightings on 9/2/2016 was retained.
+https://www.kaggle.com/semioniy/predictemall . The date of appearance was 
+converted from datestamp to mm/dd/yyyy format using Excel substring & date 
+functions to create a new column called "appeared_time", while only 
+retaining appearances on 9/2/2016.
 
 [Data Dictionary] https://www.kaggle.com/semioniy/predictemall
 
@@ -106,9 +108,10 @@ distance to pokestops/ gyms and additional data about appearances.
 [Data Source] https://www.kaggle.com/semioniy/predictemall
 
 [Data Dictionary] The file was downloaded from 
-https://www.kaggle.com/semioniy/predictemall and where the date of appearance was 
-converted from datestamp using Excel substring and date functions and only 
-sightings on 9/3/2016 was retained.
+https://www.kaggle.com/semioniy/predictemall . The date of appearance was 
+converted from datestamp to mm/dd/yyyy format using Excel substring & date 
+functions to create a new column called "appeared_time", while only 
+retaining appearances on 9/3/2016.
 
 [Unique ID Schema] The column "_id" is a unique key, but joins to the other
 tables using the "pokemonId" column.
@@ -152,7 +155,7 @@ https://github.com/stat697/team-1_project_repo/blob/master/data/sightings_09_03_
         %end;
 %mend;
 %macro loadDatasets;
-    %do i = 1 %to 5;
+    %do i = 1 %to 4;
         %loadDataIfNotAlreadyAvailable(
             &&inputDataset&i.DSN.,
             &&inputDataset&i.URL.,
