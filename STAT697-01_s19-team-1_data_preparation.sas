@@ -55,7 +55,7 @@ https://www.kaggle.com/rounakbanik/pokemon
 [Unique ID Schema] The column "pokedex_number" is a unique id that can be used to
 join to other tables.
 ;
-%let inputDataset2DSN = poke_stat_detailed;
+%let inputDataset2DSN = poke_stat_dtld;
 %let inputDataset2URL = 
 https://github.com/stat697/team-1_project_repo/blob/master/data/pokemon_stats_detailed.xlsx?raw=true;
 %let inputDataset2Type = xlsx;
@@ -116,7 +116,7 @@ retaining appearances on 9/3/2016.
 [Unique ID Schema] The column "_id" is a unique key, but joins to the other
 tables using the "pokemonId" column.
 ;
-%let inputDataset4DSN = sight_9_2_16;
+%let inputDataset4DSN = sight_9_3_16;
 %let inputDataset4URL = 
 https://github.com/stat697/team-1_project_repo/blob/master/data/sightings_09_03_2016.xlsx?raw=true;
 %let inputDataset4Type = xlsx;
