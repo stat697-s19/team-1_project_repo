@@ -46,7 +46,8 @@ Steps, Experience Points, Abilities, and more.
 
 [Number of Features] 41
 
-[Data Source] https://www.kaggle.com/rounakbanik/pokemon
+[Data Source] The file was downloaded from 
+https://www.kaggle.com/rounakbanik/pokemon
 
 [Data Dictionary] https://www.kaggle.com/rounakbanik/pokemon
 
@@ -72,7 +73,10 @@ distance to pokestops/gyms and additional data about appearances.
 
 [Number of Features] 209
 
-[Data Source] https://www.kaggle.com/semioniy/predictemall
+[Data Source] The file was downloaded from 
+https://www.kaggle.com/semioniy/predictemall and where the date of appearance was 
+converted from datestamp using Excel substring and date functions and only 
+sightings on 9/2/2016 was retained.
 
 [Data Dictionary] https://www.kaggle.com/semioniy/predictemall
 
@@ -101,7 +105,10 @@ distance to pokestops/ gyms and additional data about appearances.
 
 [Data Source] https://www.kaggle.com/semioniy/predictemall
 
-[Data Dictionary] https://www.kaggle.com/semioniy/predictemall
+[Data Dictionary] The file was downloaded from 
+https://www.kaggle.com/semioniy/predictemall and where the date of appearance was 
+converted from datestamp using Excel substring and date functions and only 
+sightings on 9/3/2016 was retained.
 
 [Unique ID Schema] The column "_id" is a unique key, but joins to the other
 tables using the "pokemonId" column.
