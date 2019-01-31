@@ -155,7 +155,7 @@ https://github.com/stat697/team-1_project_repo/blob/master/data/sightings_09_03_
         %end;
 %mend;
 %macro loadDatasets;
-    %do i = 1 %to 5;
+    %do i = 1 %to 4;
         %loadDataIfNotAlreadyAvailable(
             &&inputDataset&i.DSN.,
             &&inputDataset&i.URL.,
