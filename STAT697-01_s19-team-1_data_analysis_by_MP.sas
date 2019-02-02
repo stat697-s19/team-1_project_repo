@@ -14,11 +14,16 @@ X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPA
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 *
-Question: 
+Question: Within each Pokemon type, what are the top 5 strongest Pokemons based 
+on combat power (CP)? 
 
-Rationale:
+Rationale: To determine which Pokemons are worth catching for battles. The 
+combat power (CP) determines the strength of a Pokemon during battle.
 
-Note: 
+Note: Rank order CP from Pokemon_GO_Stats dataset for each primary Pokemon type, 
+i.e. fire, water, poison, rock, etc. and select the top 5 pokemon in each 
+segment.  Some Pokemon may have combination of type, thusly we only look at the
+primary type.
 ;
 
 
@@ -26,11 +31,13 @@ Note:
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 *
-Question: 
+Question: What are the least common Pokemon sightings in each Pokemon type?
 
-Rationale:
+Rationale: To determine which Pokemons are least frequently sighted. What makes
+them rare? Basically are the rarest sighting the most desireable for battle?
 
-Note: 
+Note: Calculate average % of sightings by Pokemons and rank order from 
+sight_9_2_16 & sight_9_3_16 datasets.
 ;
 
 
@@ -38,10 +45,14 @@ Note:
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 *
-Question: 
+Question: Are the rarest sightings the most desireable Pokemons for battle?
 
-Rationale:
+Rationale: To answer the question what makes a Pokemon rare? Are they rarest
+Pokemon sightings the most desirable for battle?
 
-Note: 
+Note: Find a correlation between % of sightings and combat power (CP). Firstly,
+full join sight_9_2_16 & sight_9_3_16. Then join this table to Pokemon_GO_Stats
+by pokemon dex. Summarize sightings rate and average CP by pokemon and run 
+proc correlation.
 ;
 
