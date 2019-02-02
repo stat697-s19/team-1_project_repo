@@ -14,11 +14,11 @@ X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPA
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 *
-Question: 
+Question: What are the top 5 strongest Pokemons? 
 
-Rationale:
+Rationale: To determine which Pokémons are worth catching.
 
-Note: 
+Note: Rank order CP from pokemon_stat1 dataset. 
 ;
 
 
@@ -26,11 +26,12 @@ Note:
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 *
-Question: 
+Question: What are the most common Pokemon sightings?
 
-Rationale:
+Rationale: To determine which Pokémons are frequently sighted.
 
-Note: 
+Note: Calculate average % of sightings by Pokemons and rank order from 
+pokemon_sightings_20160805 and pokemon_sightings_20160806 datasets.
 ;
 
 
@@ -38,10 +39,11 @@ Note:
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 *
-Question: 
+Question: Can CP predict Pokemon sightings? 
 
-Rationale:
+Rationale: To determine the likelihood of strong Pokemon sightings.
 
-Note: 
+Note: Build a simple linear regression model using CP as independent variable 
+and sightings as Y dependent variable.]
 ;
 
