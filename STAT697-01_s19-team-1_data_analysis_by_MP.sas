@@ -51,7 +51,7 @@ Rationale: To answer the question what makes a Pokemon rare? Are they rarest
 Pokemon sightings the most desirable for battle?
 
 Note: Find a correlation between % of sightings and combat power (CP). Firstly,
-full join sight_9_2_16 & sight_9_3_16.  Then join this table to Pokemon_GO_Stats
+full join sight_9_2_16 & sight_9_3_16. Then join this table to Pokemon_GO_Stats
 by pokemon dex. Summarize sightings rate and average CP by pokemon and run 
 proc correlation.
 ;
