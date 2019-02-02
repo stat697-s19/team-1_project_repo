@@ -14,11 +14,16 @@ X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPA
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 *
-Question: What are the top 5 strongest Pokemons? 
+Question: Within each Pokemon type, what are the top 5 strongest Pokemons based 
+on combat power (CP)? 
 
-Rationale: To determine which Pokémons are worth catching.
+Rationale: To determine which Pokemons are worth catching for battles. The 
+combat power (CP) determines the strength of a Pokemon during battle.
 
-Note: Rank order CP from pokemon_stat1 dataset. 
+Note: Rank order CP from Pokemon_GO_Stats dataset for each primary Pokemon type, 
+i.e. fire, water, poison, rock, etc. and select the top 5 pokemon in each 
+segment.  Some Pokemon may have combination of type, thusly we only look at the
+primary type.
 ;
 
 
@@ -26,12 +31,13 @@ Note: Rank order CP from pokemon_stat1 dataset.
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 *
-Question: What are the most common Pokemon sightings?
+Question: What are the least common Pokemon sightings in each Pokemon type?
 
-Rationale: To determine which Pokémons are frequently sighted.
+Rationale: To determine which Pokemons are least frequently sighted. What makes
+them rare? Basically are the rarest sighting the most desireable for battle?
 
 Note: Calculate average % of sightings by Pokemons and rank order from 
-pokemon_sightings_20160805 and pokemon_sightings_20160806 datasets.
+sight_9_2_16 & sight_9_3_16 datasets.
 ;
 
 
@@ -39,11 +45,14 @@ pokemon_sightings_20160805 and pokemon_sightings_20160806 datasets.
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 *
-Question: Can CP predict Pokemon sightings? 
+Question: Are the rarest sightings the most desireable Pokemons for battle?
 
-Rationale: To determine the likelihood of strong Pokemon sightings.
+Rationale: To answer the question what makes a Pokemon rare? Are they rarest
+Pokemon sightings the most desirable for battle?
 
-Note: Build a simple linear regression model using CP as independent variable 
-and sightings as Y dependent variable.]
+Note: Find a correlation between % of sightings and combat power (CP). Firstly,
+full join sight_9_2_16 & sight_9_3_16.  Then join this table to Pokemon_GO_Stats
+by pokemon dex. Summarize sightings rate and average CP by pokemon and run 
+proc correlation.
 ;
 
