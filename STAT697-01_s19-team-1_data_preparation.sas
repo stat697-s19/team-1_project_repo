@@ -164,3 +164,62 @@ https://github.com/stat697/team-1_project_repo/blob/master/data/sightings_09_03_
     %end;
 %mend;
 %loadDatasets;
+
+
+
+* check poke_stat for bad unique id values, where the column dex is intended 
+to form a composite key;
+proc sql;
+    /* check for duplicate unique id values; after executing this query, we
+       see that poke_stat_dups only has one row, where dex is missing, which 
+       we can mitigate as part of eliminating rows having missing unique id 
+       component in the next query */
+    create table poke_stat_dups as
+        select
+             dex
+            ,count(*) as row_count_for_unique_id_value
+        from
+            poke_stat
+        group by
+             dex
+        having
+            row_count_for_unique_id_value > 1
+    ;
+    /* remove rows with missing unique id components, or with unique ids that
+       do not correspond to dex; after executing this query, the new
+       dataset poke_stat_final will have no duplicate/repeated unique id values,
+       and all unique id values will correspond to our experimental units of
+       interest; this means the column dex in poke_stat is guaranteed to form a 
+       composite key */
+    create table poke_stat_final as
+        select
+            *
+        from
+            poke_stat
+        where
+            /* remove rows with missing unique id value components */
+            not(missing(dex)) 
+    ;
+quit;
+
+* inspect columns of interest in cleaned versions of datasets;
+%macro inspect(var);
+title "Inspect &var in poke_stat_final";
+proc sql;
+    select
+	 min(&var) as min
+	,max(&var) as max
+	,mean(&var) as mean
+	,median(&var) as median
+	,nmiss(&var) as missing
+    from
+	poke_stat_final
+    ;
+quit;
+title;
+%mend;
+%inspect(stamina);
+%inspect(attack);
+%inspect(defense);
+%inspect(maxCP);
+
