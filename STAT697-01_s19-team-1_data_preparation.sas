@@ -382,7 +382,7 @@ title;
 	    ,median(&var) as median
 	    ,nmiss(&var) as missing
         from
-	        combo_sights
+	    combo_sights
         ;
     quit;
     title;
