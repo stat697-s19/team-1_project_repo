@@ -259,6 +259,8 @@ column _id is intended to form the primary key;
    * macro step to check for duplicate unique id values in the sight_9_2_16 and 
    sight_9_3_16 datasets. the output confirms that niether of the datasets have
    duplicate primary keys;
+	title "Inspect for missing values in _ID column which is the primary key in 
+    &var table";
     proc sql; 
         create table &var._dups as
             select
@@ -272,6 +274,7 @@ column _id is intended to form the primary key;
                 row_count > 1
          ;
     quit;
+	title;
 %mend;
 %inspect_sight(sight_9_2_16);
 %inspect_sight(sight_9_3_16);
@@ -286,7 +289,9 @@ proc sql;
     *the combined dataset contains 30,733 rows which equals the total number of 
 	rows from sight_9_2_16 (3,734) and sight_9_3_16 (26,999) when combined. this
     shows that no rows were lost during the union all process;
-    create table sight_comb as
+	title "Combine only required columns for analysis in select statement to 
+    union sight_9_2_16 and sight_9_3_16 tables into a single data source";
+    create table combo_sights as
 	    select _id
         	,pokemonId
             ,latitude	
@@ -338,19 +343,21 @@ proc sql;
 		from sight_9_3_16
     ;
 quit;
+title;
 
 * inspect columns of interest in the cleaned combined sighting data set;
 %macro inspect_comb_sight(var);
    * check for missing values from specific columns used in our analysis. the 
    output confirmed there were no missing values for the specified columns;
-    title "Inspect for missing values &var in sight_comb";
+    title "Inspect for missing values &var in combo_sights";
     proc sql; 
         select
 			nmiss(&var)as missing
         from
-            sight_comb
+            combo_sights
         ;
     quit;
+	title;
 %mend;
 %inspect_comb_sight(continent);
 %inspect_comb_sight(pokemonid);
@@ -364,7 +371,7 @@ quit;
     * check for missing or unusual values from specific columns used in our 
     analysis which contain numeric values. no missing values or unusual values
     were found after running this step;
-    title "Inspect for missing or unusual numeric values in &var in sight_comb";
+    title "Inspect for missing or unusual numeric values in &var in combo_sights";
     proc sql;
         select 
             min(&var)as min
@@ -373,9 +380,10 @@ quit;
 	        ,median(&var)as median
 	        ,nmiss(&var)as missing
        from
-	       sight_comb
+	       combo_sights
        ;
     quit;
+	title;
 %mend;
 %inspect_num_sight_comb(temperature);
 %inspect_num_sight_comb(windspeed);
