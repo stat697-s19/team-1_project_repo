@@ -84,8 +84,8 @@ Note: In addition to the steps and specified columns previously mentioned in
 the first research question, I will also need to use the "city" column in the 
 combined sightings table.
 
-Limitations: There were no identifiable limitations. Again, all columns being 
-used in this analysis were checked for missing values and unusual numeric 
-values, which none were found.
+Limitations: There were no identifiable limitations. All columns being used in 
+this analysis were checked for missing values and unusual numeric values, 
+which none were found.
 
 ;
