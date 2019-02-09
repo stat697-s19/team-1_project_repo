@@ -34,6 +34,9 @@ from the "pokemonid" column as the key to join to the column "dex" in the
 poke_stat table. I will then group findings by Pokemon and type by using the 
 "species" and "type1" columns in the poke_stat dataset and filter by "maxcp" to 
 be equal or greater than 1200.
+
+Limitations: There were no limitations identified due to the fact there were no 
+missing values in the columns from the tables being referenced in this analysis.
 ;
 
 
@@ -53,6 +56,11 @@ seen or are more prevalent during specific weather conditions.
 Note: In addition to the steps and specified columns previously mentioned, I 
 will also need to take the average of each of the following columns: 
 "temperature", "windspeed", "windbearing", & "pressure".
+
+Limitations: All columns being used in this analysis contained no missing values 
+and no suspicious numeric values were identified using basic descriptive 
+statistics methods. The only questionable data point is the accuracy of the 
+weather metrics, but it will be difficult to QA for accuracy.
 ;
 
 
@@ -75,5 +83,9 @@ analysis would help identify where certain Pokemon with a potential max CP of
 Note: In addition to the steps and specified columns previously mentioned in 
 the first research question, I will also need to use the "city" column in the 
 combined sightings table.
+
+Limitations: There were no identifiable limitations. All columns being used in 
+this analysis were checked for missing values and unusual numeric values, 
+which none were found.
 
 ;

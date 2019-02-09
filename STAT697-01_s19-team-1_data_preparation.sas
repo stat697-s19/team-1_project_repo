@@ -122,6 +122,35 @@ https://github.com/stat697/team-1_project_repo/blob/master/data/sightings_09_03_
 %let inputDataset4Type = xlsx;
 
 
+*
+[Dataset 5 Name] combo_sights
+
+[Dataset Description] Combined data observations/rows from sight_9_2_16 & 
+sight_9_3_16 into a single data set and also retained only the pertinent columns
+needed for analysis
+
+[Experimental Unit Description] Each appearance of a Pokemon for the specified 
+day
+
+[Number of Observations] 30,733
+
+[Number of Features] 22
+
+[Data Source] https://www.kaggle.com/semioniy/predictemall
+
+[Data Dictionary] The original files were downloaded from 
+https://www.kaggle.com/semioniy/predictemall. This data set was combined from
+the sight_9_2_16 & sight_9_3_16 data sets in a Proc SQL Union All step.
+
+[Unique ID Schema] The column "_id" is a unique key, but joins to the other
+tables using the "pokemonId" column.
+;
+%let inputDataset5DSN = combo_sights;
+%let inputDataset5URL = 
+https://github.com/stat697/team-1_project_repo/blob/v0.3/data/combo_sight-edited.xlsx?raw=true;
+%let inputDataset5Type = xlsx;
+
+
 * load raw datasets over the wire, if they doesn't already exist;
 %macro loadDataIfNotAlreadyAvailable(dsn,url,filetype);
     %put &=dsn;
@@ -155,7 +184,7 @@ https://github.com/stat697/team-1_project_repo/blob/master/data/sightings_09_03_
         %end;
 %mend;
 %macro loadDatasets;
-    %do i = 1 %to 4;
+    %do i = 1 %to 5;
         %loadDataIfNotAlreadyAvailable(
             &&inputDataset&i.DSN.,
             &&inputDataset&i.URL.,
@@ -222,4 +251,137 @@ title;
 %inspect(attack);
 %inspect(defense);
 %inspect(maxCP);
+
+* check sight_9_2_16 and sight_9_3_16 for duplicate unique id values, where the 
+column _id is intended to form the primary key;
+
+%macro inspect_sight(var);
+   * macro step to check for duplicate unique id values in the sight_9_2_16 and 
+   sight_9_3_16 datasets. the output confirms that niether of the datasets have
+   duplicate primary keys;
+    proc sql; 
+        create table &var._dups as
+            select
+                _id
+                ,count(*) as row_count
+            from
+                &var
+            group by
+                _id
+            having
+                row_count > 1
+         ;
+    quit;
+%mend;
+%inspect_sight(sight_9_2_16);
+%inspect_sight(sight_9_3_16);
+
+
+*create a single data set with sight_9_2_16 and sight_9_3_16 combined since both
+tables contain the same columns. This step also removes columns that are not 
+being utilized in the analysis for increase efficiency and better system 
+performance;
+
+proc sql;
+    *the combined dataset contains 30,733 rows which equals the total number of 
+	rows from sight_9_2_16 (3,734) and sight_9_3_16 (26,999) when combined. this
+    shows that no rows were lost during the union all process;
+    create table sight_comb as
+	    select _id
+        	,pokemonId
+            ,latitude	
+	        ,longitude
+			,appeared_time
+			,appearedTimeOfDay
+			,appearedHour	
+	        ,appearedMinute
+			,city	
+	        ,continent	
+	        ,weather	
+	        ,temperature	
+	        ,windSpeed	
+	        ,windBearing	
+	        ,pressure	
+	        ,weatherIcon
+			,population_density	
+	        ,urban	
+	        ,suburban	
+	        ,midurban	
+	        ,rural	
+	        ,gymDistanceKm
+		from sight_9_2_16
+
+		union all
+
+		select _id
+        	,pokemonId
+            ,latitude	
+	        ,longitude
+			,appeared_time
+			,appearedTimeOfDay
+			,appearedHour	
+	        ,appearedMinute
+			,city	
+	        ,continent	
+	        ,weather	
+	        ,temperature	
+	        ,windSpeed	
+	        ,windBearing	
+	        ,pressure	
+	        ,weatherIcon
+			,population_density	
+	        ,urban	
+	        ,suburban	
+	        ,midurban	
+	        ,rural	
+	        ,gymDistanceKm
+		from sight_9_3_16
+    ;
+quit;
+
+* inspect columns of interest in the cleaned combined sighting data set;
+%macro inspect_comb_sight(var);
+   * check for missing values from specific columns used in our analysis. the 
+   output confirmed there were no missing values for the specified columns;
+    title "Inspect for missing values &var in sight_comb";
+    proc sql; 
+        select
+			nmiss(&var)as missing
+        from
+            sight_comb
+        ;
+    quit;
+%mend;
+%inspect_comb_sight(continent);
+%inspect_comb_sight(pokemonid);
+%inspect_comb_sight(city);
+%inspect_comb_sight(urban);
+%inspect_comb_sight(suburban);
+%inspect_comb_sight(midurban);
+%inspect_comb_sight(rural);
+
+%macro inspect_num_sight_comb(var);
+    * check for missing or unusual values from specific columns used in our 
+    analysis which contain numeric values. no missing values or unusual values
+    were found after running this step;
+    title "Inspect for missing or unusual numeric values in &var in sight_comb";
+    proc sql;
+        select 
+            min(&var)as min
+	        ,max(&var)as max
+	        ,mean(&var)as mean
+	        ,median(&var)as median
+	        ,nmiss(&var)as missing
+       from
+	       sight_comb
+       ;
+    quit;
+%mend;
+%inspect_num_sight_comb(temperature);
+%inspect_num_sight_comb(windspeed);
+%inspect_num_sight_comb(windbearing);
+%inspect_num_sight_comb(pressure);
+
+
+
 
