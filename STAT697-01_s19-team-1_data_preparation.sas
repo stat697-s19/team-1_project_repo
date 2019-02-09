@@ -233,19 +233,19 @@ quit;
 
 * inspect columns of interest in cleaned versions of datasets;
 %macro inspect(var);
-title "Inspect &var in poke_stat_final";
-proc sql;
-    select
-	 min(&var) as min
-	,max(&var) as max
-	,mean(&var) as mean
-	,median(&var) as median
-	,nmiss(&var) as missing
-    from
-	poke_stat_final
-    ;
-quit;
-title;
+    title "Inspect &var in poke_stat_final";
+    proc sql;
+        select
+	    min(&var) as min
+	    ,max(&var) as max
+	    ,mean(&var) as mean
+	    ,median(&var) as median
+	    ,nmiss(&var) as missing
+        from
+	    poke_stat_final
+        ;
+    quit;
+    title;
 %mend;
 %inspect(stamina);
 %inspect(attack);
@@ -259,7 +259,7 @@ column _id is intended to form the primary key;
    * macro step to check for duplicate unique id values in the sight_9_2_16 and 
    sight_9_3_16 datasets. the output confirms that niether of the datasets have
    duplicate primary keys;
-	title "Inspect for missing values in _ID column which is the primary key in 
+    title "Inspect for missing values in _ID column which is the primary key in 
     &var table";
     proc sql; 
         create table &var._dups as
@@ -274,7 +274,7 @@ column _id is intended to form the primary key;
                 row_count > 1
          ;
     quit;
-	title;
+    title;
 %mend;
 %inspect_sight(sight_9_2_16);
 %inspect_sight(sight_9_3_16);
@@ -287,60 +287,62 @@ performance;
 
 proc sql;
     *the combined dataset contains 30,733 rows which equals the total number of 
-	rows from sight_9_2_16 (3,734) and sight_9_3_16 (26,999) when combined. this
-    shows that no rows were lost during the union all process;
-	title "Combine only required columns for analysis in select statement to 
+     rows from sight_9_2_16 (3,734) and sight_9_3_16 (26,999) when combined. this
+     shows that no rows were lost during the union all process;
+    title "Combine only required columns for analysis in select statement to 
     union sight_9_2_16 and sight_9_3_16 tables into a single data source";
     create table combo_sights as
-	    select _id
-        	,pokemonId
+        select 
+	    _id
+            ,pokemonId
             ,latitude	
-	        ,longitude
-			,appeared_time
-			,appearedTimeOfDay
-			,appearedHour	
-	        ,appearedMinute
-			,city	
-	        ,continent	
-	        ,weather	
-	        ,temperature	
-	        ,windSpeed	
-	        ,windBearing	
-	        ,pressure	
-	        ,weatherIcon
-			,population_density	
-	        ,urban	
-	        ,suburban	
-	        ,midurban	
-	        ,rural	
-	        ,gymDistanceKm
-		from sight_9_2_16
-
-		union all
-
-		select _id
-        	,pokemonId
+	    ,longitude
+	    ,appeared_time
+	    ,appearedTimeOfDay
+	    ,appearedHour	
+	    ,appearedMinute
+	    ,city	
+	    ,continent	
+	    ,weather	
+	    ,temperature	
+	    ,windSpeed	
+	    ,windBearing	
+	    ,pressure	
+	    ,weatherIcon
+	    ,population_density	
+	    ,urban	
+	    ,suburban	
+            ,midurban	
+	    ,rural	
+	    ,gymDistanceKm
+	from 
+	    sight_9_2_16
+	union all
+	select 
+	    _id
+            ,pokemonId
             ,latitude	
-	        ,longitude
-			,appeared_time
-			,appearedTimeOfDay
-			,appearedHour	
-	        ,appearedMinute
-			,city	
-	        ,continent	
-	        ,weather	
-	        ,temperature	
-	        ,windSpeed	
-	        ,windBearing	
-	        ,pressure	
-	        ,weatherIcon
-			,population_density	
-	        ,urban	
-	        ,suburban	
-	        ,midurban	
-	        ,rural	
-	        ,gymDistanceKm
-		from sight_9_3_16
+	    ,longitude
+	    ,appeared_time
+	    ,appearedTimeOfDay
+	    ,appearedHour	
+	    ,appearedMinute
+	    ,city	
+	    ,continent	
+	    ,weather	
+	    ,temperature	
+	    ,windSpeed	
+	    ,windBearing	
+	    ,pressure	
+	    ,weatherIcon
+	    ,population_density	
+	    ,urban	
+	    ,suburban	
+            ,midurban	
+	    ,rural	
+	    ,gymDistanceKm
+	from 
+	    sight_9_3_16
     ;
 quit;
 title;
@@ -352,12 +354,12 @@ title;
     title "Inspect for missing values &var in combo_sights";
     proc sql; 
         select
-			nmiss(&var)as missing
+            nmiss(&var) as missing
         from
             combo_sights
         ;
     quit;
-	title;
+    title;
 %mend;
 %inspect_comb_sight(continent);
 %inspect_comb_sight(pokemonid);
@@ -374,16 +376,16 @@ title;
     title "Inspect for missing or unusual numeric values in &var in combo_sights";
     proc sql;
         select 
-            min(&var)as min
-	        ,max(&var)as max
-	        ,mean(&var)as mean
-	        ,median(&var)as median
-	        ,nmiss(&var)as missing
-       from
-	       combo_sights
-       ;
+            min(&var) as min
+	    ,max(&var) as max
+	    ,mean(&var) as mean
+	    ,median(&var) as median
+	    ,nmiss(&var) as missing
+        from
+	    combo_sights
+        ;
     quit;
-	title;
+    title;
 %mend;
 %inspect_num_sight_comb(temperature);
 %inspect_num_sight_comb(windspeed);
