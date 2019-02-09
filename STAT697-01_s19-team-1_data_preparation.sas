@@ -236,13 +236,13 @@ quit;
     title "Inspect &var in poke_stat_final";
     proc sql;
         select
-	    min(&var) as min
-	    ,max(&var) as max
-	    ,mean(&var) as mean
-	    ,median(&var) as median
-	    ,nmiss(&var) as missing
+            min(&var) as min
+	        ,max(&var) as max
+	        ,mean(&var) as mean
+	        ,median(&var) as median
+	        ,nmiss(&var) as missing
         from
-	    poke_stat_final
+	        poke_stat_final
         ;
     quit;
     title;
@@ -294,8 +294,8 @@ proc sql;
     create table combo_sights as
         select 
 	    _id
-            ,pokemonId
-            ,latitude	
+        ,pokemonId
+        ,latitude	
 	    ,longitude
 	    ,appeared_time
 	    ,appearedTimeOfDay
@@ -312,7 +312,7 @@ proc sql;
 	    ,population_density	
 	    ,urban	
 	    ,suburban	
-            ,midurban	
+        ,midurban	
 	    ,rural	
 	    ,gymDistanceKm
 	from 
@@ -320,8 +320,8 @@ proc sql;
 	union all
 	select 
 	    _id
-            ,pokemonId
-            ,latitude	
+        ,pokemonId
+        ,latitude	
 	    ,longitude
 	    ,appeared_time
 	    ,appearedTimeOfDay
@@ -338,7 +338,7 @@ proc sql;
 	    ,population_density	
 	    ,urban	
 	    ,suburban	
-            ,midurban	
+        ,midurban	
 	    ,rural	
 	    ,gymDistanceKm
 	from 
@@ -377,12 +377,12 @@ title;
     proc sql;
         select 
             min(&var) as min
-	    ,max(&var) as max
-	    ,mean(&var) as mean
-	    ,median(&var) as median
-	    ,nmiss(&var) as missing
+	        ,max(&var) as max
+	        ,mean(&var) as mean
+	        ,median(&var) as median
+	        ,nmiss(&var) as missing
         from
-	    combo_sights
+	        combo_sights
         ;
     quit;
     title;
