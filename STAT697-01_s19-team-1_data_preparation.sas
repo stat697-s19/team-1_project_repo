@@ -429,3 +429,22 @@ proc sql;
 quit;
 
 
+* inspect columns of interest in cleaned versions of datasets;
+%macro inspect(var);
+    title "Inspect &var in poke_stat_dtld_final";
+    proc sql;
+        select
+            min(&var) as min
+	    ,max(&var) as max
+	    ,mean(&var) as mean
+	    ,median(&var) as median
+	    ,nmiss(&var) as missing
+        from
+	    poke_stat_dtld_final
+        ;
+    quit;
+    title;
+%mend;
+%inspect(pokedex_number);
+
+
