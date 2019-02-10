@@ -20,6 +20,9 @@ Rationale: We can find out in which city we are likely to catch a pokemon easily
 
 Note: This compares the column "city" from sighting_09_02_2016 and 
 sighting_09_03_2016 to the column "pokemonId" from the same datasets.
+
+Limitations: There were no limitations identified due to the fact there were no 
+missing values in the columns from the tables being referenced in this analysis.
 ;
 
 
@@ -35,6 +38,9 @@ skill in America.
 
 Note: This compares the column "Attack" from Pokemon_Go_Stats and the column 
 "continent" from datasets sighting_09_02_2016 and sighting_09_03_2016.
+
+Limitations: There were no limitations identified due to the fact there were no 
+missing values in the columns from the tables being referenced in this analysis.
 ;
 
 
@@ -49,4 +55,9 @@ Rationale: This shows the descriptive pokemon data of each weather
 
 Note: This compares the column "Defense" from Pokemon_Go_Stats and the column 
 "weather" from datasets sighting_09_02_2016 and sighting_09_03_2016.
+
+Limitations: There were no limitations identified due to the fact there were no 
+missing values in the columns from the tables being referenced in this analysis.
 ;
+
+

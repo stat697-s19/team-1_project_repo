@@ -393,5 +393,39 @@ title;
 %inspect_num_sight_comb(pressure);
 
 
+* check poke_stat_dtld for bad unique id values, where the column pokedex_number is intended 
+to form a composite key;
+proc sql;
+    /* check for duplicate unique id values; after executing this query, we
+       see that poke_stat_dtld_dups only has one row, where dex is missing, which 
+       we can mitigate as part of eliminating rows having missing unique id 
+       component in the next query */
+    create table poke_stat_dtld_dups as
+        select
+            pokedex_number
+            ,count(*) as row_count_for_unique_id_value
+        from
+            poke_stat_dtld
+        group by
+            pokedex_number
+        having
+            row_count_for_unique_id_value > 1
+    ;
+    /* remove rows with missing unique id components, or with unique ids that
+       do not correspond to pokedex_number; after executing this query, the new
+       dataset poke_stat_dtld_final will have no duplicate/repeated unique id values,
+       and all unique id values will correspond to our experimental units of
+       interest; this means the column pokedex_number in poke_stat_dtld is guaranteed to form a 
+       composite key */
+    create table poke_stat_dtld_final as
+        select
+            *
+        from
+            poke_stat_dtld
+        where
+            /* remove rows with missing unique id value components */
+            not(missing(pokedex_number)) 
+    ;
+quit;
 
 
