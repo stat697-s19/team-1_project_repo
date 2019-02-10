@@ -430,7 +430,7 @@ quit;
 
 
 * inspect columns of interest in cleaned versions of datasets;
-%macro inspect(var);
+%macro inspect_dtld(var);
     title "Inspect &var in poke_stat_dtld_final";
     proc sql;
         select
@@ -445,6 +445,8 @@ quit;
     quit;
     title;
 %mend;
-%inspect(pokedex_number);
-
-
+%inspect_dtld(base_egg_steps);
+%inspect_dtld(capture_rate);
+%inspect_dtld(experience_growth);
+%inspect_dtld(is_legendary);
+%inspect_dtld(speed);
