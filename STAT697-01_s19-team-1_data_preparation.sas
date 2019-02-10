@@ -393,13 +393,13 @@ title;
 %inspect_num_sight_comb(pressure);
 
 
-* check poke_stat_dtld for bad unique id values, where the column pokedex_number is intended 
-to form a composite key;
+* check poke_stat_dtld for bad unique id values, where the column pokedex_number 
+is intended to form a composite key;
 proc sql;
     /* check for duplicate unique id values; after executing this query, we
-       see that poke_stat_dtld_dups only has one row, where dex is missing, which 
-       we can mitigate as part of eliminating rows having missing unique id 
-       component in the next query */
+       see that poke_stat_dtld_dups only has one row, where dex is missing, 
+       which we can mitigate as part of eliminating rows having missing unique 
+       id component in the next query */
     create table poke_stat_dtld_dups as
         select
             pokedex_number
@@ -412,11 +412,11 @@ proc sql;
             row_count_for_unique_id_value > 1
     ;
     /* remove rows with missing unique id components, or with unique ids that
-       do not correspond to pokedex_number; after executing this query, the new
-       dataset poke_stat_dtld_final will have no duplicate/repeated unique id values,
-       and all unique id values will correspond to our experimental units of
-       interest; this means the column pokedex_number in poke_stat_dtld is guaranteed to form a 
-       composite key */
+       do not correspond to pokedex_number; after executing this query, the 
+       new dataset poke_stat_dtld_final will have no duplicate/repeated unique
+       id values and all unique id values will correspond to our experimental 
+       units of interest; this means the column pokedex_number in 
+       poke_stat_dtld is guaranteed to form a composite key */
     create table poke_stat_dtld_final as
         select
             *
@@ -427,5 +427,24 @@ proc sql;
             not(missing(pokedex_number)) 
     ;
 quit;
+
+
+* inspect columns of interest in cleaned versions of datasets;
+%macro inspect(var);
+    title "Inspect &var in poke_stat_dtld_final";
+    proc sql;
+        select
+            min(&var) as min
+	    ,max(&var) as max
+	    ,mean(&var) as mean
+	    ,median(&var) as median
+	    ,nmiss(&var) as missing
+        from
+	    poke_stat_dtld_final
+        ;
+    quit;
+    title;
+%mend;
+%inspect(pokedex_number);
 
 
