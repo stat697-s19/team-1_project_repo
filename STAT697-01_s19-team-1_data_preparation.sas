@@ -235,7 +235,7 @@ proc sql;
         where
             /* remove rows with missing unique id value components */
             not(missing(dex)) 
-		order by
+        order by
             dex
     ;
 quit;
@@ -331,14 +331,13 @@ proc sql;
             ,rural	
             ,gymDistanceKm
         from 
-	        sight_9_3_16
-		order by 
+            sight_9_3_16
+        order by 
             pokemonId
             ,_id
     ;
 quit;
 title;
-
 
 
 * check poke_stat_dtld for bad unique id values, where the column pokedex_number 
@@ -374,8 +373,8 @@ proc sql;
         where
             /* remove rows with missing unique id value components */
             not(missing(pokedex_number)) 
-		order by 
-            pokemon_number
+        order by 
+            pokedex_number
     ;
 quit;
 
@@ -387,12 +386,12 @@ quit;
         proc sql;
             select
                 min(&var) as min
-	            ,max(&var) as max
-	            ,mean(&var) as mean
-	            ,median(&var) as median
-	            ,nmiss(&var) as missing
+                ,max(&var) as max
+                ,mean(&var) as mean
+                ,median(&var) as median
+                ,nmiss(&var) as missing
             from
-	            poke_stat_final
+                poke_stat_final
             ;
         quit;
         title;
@@ -434,12 +433,12 @@ quit;
         proc sql;
             select 
                 min(&var) as min
-        	    ,max(&var) as max
-        	    ,mean(&var) as mean
-        	    ,median(&var) as median
-        	    ,nmiss(&var) as missing
+                ,max(&var) as max
+                ,mean(&var) as mean
+                ,median(&var) as median
+                ,nmiss(&var) as missing
             from
-        	    combo_sights
+                combo_sights
             ;
         quit;
         title;
@@ -456,12 +455,12 @@ quit;
         proc sql;
             select
                 min(&var) as min
-	            ,max(&var) as max
-	            ,mean(&var) as mean
-	            ,median(&var) as median
-	            ,nmiss(&var) as missing
+                ,max(&var) as max
+                ,mean(&var) as mean
+                ,median(&var) as median
+                ,nmiss(&var) as missing
             from
-	            poke_stat_dtld_final
+                poke_stat_dtld_final
             ;
         quit;
         title;
@@ -484,10 +483,10 @@ quit;
   proc sort step) on the computer they were tested on;
 data pokemon_stats_all_v1;
     retain
-	    dex
-		_id
-		type1
-	    stamina
+        dex
+        _id
+        type1
+        stamina
         attack
         defense
         maxCP
@@ -496,7 +495,7 @@ data pokemon_stats_all_v1;
         experience_growth
         is_legendary
         speed
-		continent
+        continent
         city
         urban
         suburban
@@ -508,10 +507,10 @@ data pokemon_stats_all_v1;
         pressure
     ;
     keep
-	    dex
-		_id
-		type1
-	    stamina
+        dex
+        _id
+        type1
+        stamina
         attack
         defense
         maxCP
@@ -520,7 +519,7 @@ data pokemon_stats_all_v1;
         experience_growth
         is_legendary
         speed
-		continent
+        continent
         city
         urban
         suburban
@@ -533,24 +532,22 @@ data pokemon_stats_all_v1;
     ;
     merge
         poke_stat_final(in=a)
-		poke_stat_dtld_final(
-			drop  = attack
+        poke_stat_dtld_final(
+            drop  = attack
                     defense
             rename=(
                 pokedex_number = dex
+                )
             )
-		)
-		combo_sights(
+        combo_sights(
             rename=(
                 pokemonid = dex
+                )
             )
-        )
     ;
-    by 
-        dex
+    by dex
     ;
-	if 
-       a
+    if a
     ;
 
 run;
@@ -560,7 +557,6 @@ proc sort data=pokemon_stats_all_v1 nodupkey;
        _id
     ;
 run;
-
 
 
 * combine poke_stat_final, poke_stat_dtld_final and combo_sights horizontally 
@@ -577,35 +573,35 @@ run;
 proc sql;
     create table pokemon_stats_all_v2 as
         select 
-	        A.dex
-	        ,_id
-	        ,coalesce(A.type1,B.type1) as type
-	        ,stamina
-	        ,A.attack
-	        ,A.defense
-	        ,maxCP
-	        ,base_egg_steps
-	        ,capture_rate
- 	        ,experience_growth
-	        ,is_legendary
-	        ,speed
-	        ,continent
-	        ,city
-	        ,urban
-	        ,suburban
-	        ,midurban
-	        ,rural
-	        ,temperature
-	        ,windspeed
-	        ,windbearing
- 	        ,pressure
+	    A.dex
+	    ,_id
+	    ,A.type1
+	    ,A.stamina
+	    ,A.attack
+	    ,A.defense
+	    ,A.maxCP
+	    ,B.base_egg_steps
+	    ,B.capture_rate
+	    ,B.experience_growth
+	    ,B.is_legendary
+	    ,B.speed
+	    ,C.continent
+	    ,C.city
+	    ,C.urban
+	    ,C.suburban
+	    ,C.midurban
+	    ,C.rural
+	    ,C.temperature
+	    ,C.windspeed
+	    ,C.windbearing
+	    ,C.pressure
         from
             poke_stat_final as A
             left join
             poke_stat_dtld_final as B
             on A.dex=B.pokedex_number
-			left join 
-			combo_sights as C 
+	    left join 
+	    combo_sights as C 
             on A.dex=C.pokemonId
         order by
             A.dex
@@ -613,11 +609,10 @@ proc sql;
     ;
 quit;
 
-
 * verify that pokemon_stats_all_v1 and pokemon_stats_all_v2 are identical;
 proc compare
-        base=pokemon_stats_all_v1
-        compare=pokemon_stats_all_v2
-        novalues
+    base=pokemon_stats_all_v1
+    compare=pokemon_stats_all_v2
+    novalues
     ;
 run;
