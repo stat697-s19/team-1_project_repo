@@ -574,7 +574,7 @@ proc sql;
     create table pokemon_stats_all_v2 as
         select 
 	    A.dex
-	    ,_id
+	    ,C._id
 	    ,A.type1
 	    ,A.stamina
 	    ,A.attack
