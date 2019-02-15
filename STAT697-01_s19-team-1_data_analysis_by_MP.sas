@@ -26,9 +26,104 @@ segment.  Some Pokemon may have combination of type, thusly we only look at the
 primary type.
 
 Limitations: Values of "Maximum CP" equal to zero should be excluded from this 
-analysis, since they are potentially missing data values. 
+analysis, since they are potentially missing data values. The sights data is
+only based on two days data.
 ;
 
+proc sql;
+	create table pokemon_analysis as
+	select 
+        dex       
+        ,aa.type1 
+        ,species  
+        ,maxcp    
+		,n_pokemon
+		,sight_type
+        ,count(distinct _id) as Sightings
+		,calculated sightings/sight_type as sight_type_pct format = percent15.2
+    from 
+        pokemon_stats_all_v2 aa
+		left join
+		(select 
+             type1
+			 ,count(distinct dex) as n_pokemon
+             ,sum(case when continent = "America" then 1
+			           else 0 end) as sight_type
+		 from  
+		     pokemon_stats_all_v2 
+		 group by 
+		     type1) bb
+		on aa.type1=bb.type1
+
+    where 
+        continent = "America"
+    group by 
+        dex
+        ,aa.type1
+        ,species
+        ,maxcp
+		,n_pokemon
+		,sight_type
+	order by 
+        aa.type1
+        ,maxcp desc
+    ;
+quit;
+
+title "Total Sightings in America";
+proc sql;
+	select 
+        count(distinct _id) as sightings format = comma10.0
+    from 
+        pokemon_stats_all_v2 
+    where 
+        continent = "America"
+    group by continent
+    ;
+quit;
+title;
+
+data type_top5 ;
+    label
+		type1     = "Type"
+		n_pokemon = "# of Unique Pokemon"
+		seq_id    = "Rank"
+		dex       = "Pokemon ID"
+		species   = "Pokemon"
+		maxcp     = "Max CP"
+		sightings = "# of Sightings"
+        sight_type_pct="% of Type"
+    ;
+    set 
+        pokemon_analysis
+    ;
+    by 
+        type1
+    ;
+    if 
+        first.type1 then seq_id=0
+    ;
+    seq_id+1
+    ;
+    if 
+        seq_id<=5 then output 
+    ;
+	format
+	    sight_type_pct percent15.2
+		maxcp comma10.0
+    ;
+run;
+
+title "Strongest 5 Pokemons Sighted within Each Type";
+footnote "There are Pokemons that are have never been sighted. Thusly, we 
+ adjust our research question to Top 5 within each Type that have been sighted 
+ in America. Within each type, the Pokemon with highest CP were also most 
+ sighted and vice versa.";
+proc print data = type_top5 noobs label;
+	var type1 n_pokemon seq_id species maxcp sightings sight_type_pct;
+run;
+title;
+footnote;
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
@@ -49,7 +144,55 @@ order and print top 5 of each "type1".
 Limitations: Values of "Average % of sightings" equal to zero should
 be excluded from this analysis, since they are potentially missing data values.
 ;
+proc sort data = type_top5; 
+    by 
+        type1 
+        sightings
+    ; 
+run;
 
+data type_top5 ;
+    label
+		type1     = "Type"
+		n_pokemon = "# of Pokemon"
+		seq_id    = "Rank"
+		dex       = "Pokemon ID"
+		species   = "Pokemon"
+		maxcp     = "Max CP"
+		sightings = "# of Sightings"
+        sight_type_pct="% of Type"
+    ;
+    set 
+        type_top5
+    ;
+    by 
+        type1
+    ;
+    if 
+        first.type1 then seq_id=0
+    ;
+    seq_id+1
+    ;
+    if 
+        seq_id<=5 then output 
+    ;
+	format
+	    sight_type_pct percent15.2
+		maxcp comma10.0
+    ;
+run;
+
+
+title "Rarest 5 Pokemons Sightings within Each Type";
+footnote "There are Pokemons that are have never been sighted. Thusly, we 
+ adjust our research question to Top 5 rarest sightings in America for
+ each Type. Within each type, the Pokemon with highest CP were also most 
+ sighted and vice versa.";
+proc print data = type_top5 noobs label;
+	var type1 n_pokemon seq_id species maxcp sightings sight_type_pct;
+run;
+title;
+footnote;
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
@@ -71,3 +214,53 @@ should be excluded from this analysis, since they are potentially missing data
 values.
 ;
 
+title "Correlation Between Max CP and Sightings";
+proc corr
+    pearson spearman fisher (biasadj = no) nomiss
+	data = pokemon_analysis
+	;
+	var maxcp
+	    sightings
+	;
+run;
+title;
+footnote ;
+
+
+proc sgplot
+    data = pokemon_analysis
+    ;
+    scatter x= maxcp y = sightings
+    ;
+    loess   x= maxcp y = sightings/nomarkers
+    ;
+    loess   x= maxcp y = sightings/smooth = 1 nomarkers
+    ;
+    ellipse x= maxcp y = sightings/type=predicted
+    ;
+run;
+title;
+footnote;
+
+title "Max CP Strenght in Predicting Sightings";
+footnote "Sightings and Max CP have statistical significant negative linear 
+ relationship. As assume, the rarest sighted Pokemons have stronger 
+ maximum combat power.  However, Max CP can only explain 13.8% of the 
+ variability in sightings (r=0.1385,p<0.0001). MaxCP alone is not a strong 
+ enough to predictor of sightings.";
+
+proc glm
+    data = pokemon_analysis
+    ;
+	model
+	    sightings = maxcp
+		/solution
+	;
+	output 
+        out = resids
+		r = res
+	;
+run;
+quit;
+title;
+footnote;
