@@ -31,8 +31,8 @@ only based on two days data.
 ;
 
 proc sql;
-	create table pokemon_analysis as
-	select 
+    create table pokemon_analysis as
+    select 
         dex       
         ,aa.type1 
         ,species  
@@ -71,7 +71,7 @@ quit;
 
 title "Total Sightings in America";
 proc sql;
-	select 
+    select 
         count(distinct _id) as sightings format = comma10.0
     from 
         pokemon_stats_all_v2 
@@ -107,9 +107,9 @@ data type_top5 ;
     if 
         seq_id<=5 then output 
     ;
-	format
-	    sight_type_pct percent15.2
-	    maxcp comma10.0
+    format
+        sight_type_pct percent15.2	    
+	maxcp comma10.0
     ;
 run;
 
@@ -128,7 +128,8 @@ proc print
 	species 
 	maxcp 
 	sightings 
-	sight_type_pct;
+	sight_type_pct
+    ;
 run;
 title;
 footnote;
@@ -186,9 +187,9 @@ data type_top5 ;
     if 
         seq_id<=5 then output 
     ;
-	format
-	    sight_type_pct percent15.2
-	    maxcp comma10.0
+    format
+        sight_type_pct percent15.2
+        maxcp comma10.0
     ;
 run;
 
@@ -208,7 +209,8 @@ proc print
 	species 
 	maxcp 
 	sightings 
-	sight_type_pct;
+	sight_type_pct
+    ;
 run;
 title;
 footnote;
@@ -236,12 +238,12 @@ values.
 title "Correlation Between Max CP and Sightings";
 proc corr
     pearson spearman fisher (biasadj = no) nomiss
-	data = pokemon_analysis
-	;
-	var 
-	    maxcp
-	    sightings
-	;
+    data = pokemon_analysis
+    ;
+    var 
+        maxcp
+        sightings
+    ;
 run;
 title;
 footnote ;
@@ -272,14 +274,14 @@ footnote "Sightings and Max CP have statistical significant negative linear
 proc glm
     data = pokemon_analysis
     ;
-	model
-	    sightings = maxcp
-		/solution
-	;
-	output 
-            out = resids
-	    r = res
-	;
+    model
+        sightings = maxcp
+	/solution
+    ;
+    output 
+        out = resids
+	r = res
+    ;
 run;
 quit;
 title;
