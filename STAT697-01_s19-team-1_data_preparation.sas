@@ -485,6 +485,7 @@ data pokemon_stats_all_v1;
     retain
         dex
         _id
+		species
         type1
         stamina
         attack
@@ -509,6 +510,7 @@ data pokemon_stats_all_v1;
     keep
         dex
         _id
+		species
         type1
         stamina
         attack
@@ -535,6 +537,7 @@ data pokemon_stats_all_v1;
         poke_stat_dtld_final(
             drop  = attack
                     defense
+					type1
             rename=(
                 pokedex_number = dex
                 )
@@ -575,6 +578,7 @@ proc sql;
         select 
 	    A.dex
 	    ,C._id
+		,A.species
 	    ,A.type1
 	    ,A.stamina
 	    ,A.attack
