@@ -109,7 +109,7 @@ proc sql;
             ,avg(pressure) as pressure format = 7.2
             ,min(pressure) as min_presre format = 7.2
             ,max(pressure) as max_presre format = 7.2
-	     from
+         from
 	        pokemon_stats_all_v2
          where
             maxcp>=1200
@@ -153,8 +153,8 @@ quit;
                 type1
                 ,weather
             ;
-            quit
-            ;
+     quit
+     ;
 
     proc sort data = &currentIteration.;
         by type1;
