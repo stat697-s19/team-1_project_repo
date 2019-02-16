@@ -110,7 +110,7 @@ proc sql;
             ,min(pressure) as min_presre format = 7.2
             ,max(pressure) as max_presre format = 7.2
          from
-	        pokemon_stats_all_v2
+            pokemon_stats_all_v2
          where
             maxcp>=1200
             and continent="America"
