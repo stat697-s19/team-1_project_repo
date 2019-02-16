@@ -44,7 +44,7 @@ proc sql;
         select 
            distinct type1
            ,count(*) as cnt_sight
-		   ,(count(*)/(
+           ,(count(*)/(
                 select 
                     count(*) 
                 from 
@@ -52,20 +52,20 @@ proc sql;
                 where 
                     maxcp>=1200
                     and continent="America")) 
-              as pcnt_sght_1200 format = percent8.
-		   ,(count(*)/(
+           as pcnt_sght_1200 format = percent8.
+           ,(count(*)/(
                 select 
                     count(*) 
                 from 
                     pokemon_stats_all_v2))
-              as pcnt_ttl_sght format = percent7.6
+           as pcnt_ttl_sght format = percent7.6
         from
             pokemon_stats_all_v2
         where
             maxcp>=1200
             and continent="America"
-		group by
-			type1
+        group by
+            type1
         ;
 quit;
 
@@ -115,7 +115,7 @@ proc sql;
 	        maxcp>=1200
 	        and continent="America"
 	     group by
-		    type1
+            type1
        ;
 quit;
 
@@ -127,7 +127,7 @@ proc sql noprint;
 	select 
         distinct weather into :iterationList separated by "|"
 	from
-		pokemon_stats_all_v2;
+        pokemon_stats_all_v2;
 quit;
 
 %macro weather(
