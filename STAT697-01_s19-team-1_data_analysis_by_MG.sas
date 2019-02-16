@@ -97,18 +97,18 @@ proc sql;
 	    select 
 	        distinct type1
 	        ,count(type1) as count
-			,avg(temperature) as temp format = 5.2
-			,min(temperature) as min_temp format = 5.2
-			,max(temperature) as max_temp format = 5.2
-			,avg(windSpeed) as wnd_spd format = 5.2
-			,min(windSpeed) as min_spd format = 5.2
-			,max(windSpeed) as max_spd format = 5.2
-			,avg(windBearing) as wnd_bear format = 6.2
-			,min(windBearing) as min_bear format = 6.2
-			,max(windBearing) as max_bear format = 6.2
-			,avg(pressure) as pressure format = 7.2
-			,min(pressure) as min_presre format = 7.2
-			,max(pressure) as max_presre format = 7.2
+            ,avg(temperature) as temp format = 5.2
+            ,min(temperature) as min_temp format = 5.2
+            ,max(temperature) as max_temp format = 5.2
+            ,avg(windSpeed) as wnd_spd format = 5.2
+            ,min(windSpeed) as min_spd format = 5.2
+            ,max(windSpeed) as max_spd format = 5.2
+            ,avg(windBearing) as wnd_bear format = 6.2
+            ,min(windBearing) as min_bear format = 6.2
+            ,max(windBearing) as max_bear format = 6.2
+            ,avg(pressure) as pressure format = 7.2
+            ,min(pressure) as min_presre format = 7.2
+            ,max(pressure) as max_presre format = 7.2
 	     from
 	        pokemon_stats_all_v2
 	     where
@@ -124,9 +124,9 @@ type of Pokemon when they appear, but does not provide additional insight after
 initial pass;
 
 proc sql noprint;
-	select 
+    select 
         distinct weather into :iterationList separated by "|"
-	from
+    from
         pokemon_stats_all_v2;
 quit;
 
@@ -140,7 +140,7 @@ quit;
 %let currentIteration = %scan(&iterationList.,&i.,|);
     proc sql; 
         create table &currentIteration. as
-	        select 
+            select 
 	            distinct type1
 	            ,count(weather) as &currentIteration.
 	        from
@@ -156,7 +156,7 @@ quit;
             quit
             ;
 
-	proc sort data = &currentIteration.;
+    proc sort data = &currentIteration.;
         by type1;
     run; 
 
@@ -207,11 +207,11 @@ proc sql;
             ,sum(suburban) as suburb
             ,sum(rural) as rural
          from
-	        pokemon_stats_all_v2
-	     where
+            pokemon_stats_all_v2
+         where
 	        maxcp>=1200
-	        and continent="America"
-	     group by
+            and continent="America"
+         group by
             type1 
             ,city
          order by 
