@@ -114,7 +114,7 @@ proc sql;
 	     where
 	        maxcp>=1200
 	        and continent="America"
-	     group by
+         group by
             type1
        ;
 quit;
@@ -141,9 +141,9 @@ quit;
     proc sql; 
         create table &currentIteration. as
             select 
-	            distinct type1
-	            ,count(weather) as &currentIteration.
-	        from
+                distinct type1
+                ,count(weather) as &currentIteration.
+            from
                 pokemon_stats_all_v2
             where
                 maxcp>=1200
@@ -209,7 +209,7 @@ proc sql;
          from
             pokemon_stats_all_v2
          where
-	        maxcp>=1200
+            maxcp>=1200
             and continent="America"
          group by
             type1 
