@@ -95,8 +95,8 @@ weather metrics, but it will be difficult to QA for accuracy.
 proc sql;
     create table cnt_type_whtr as
 	    select 
-	        distinct type1
-	        ,count(type1) as count
+            distinct type1
+            ,count(type1) as count
             ,avg(temperature) as temp format = 5.2
             ,min(temperature) as min_temp format = 5.2
             ,max(temperature) as max_temp format = 5.2
@@ -111,9 +111,9 @@ proc sql;
             ,max(pressure) as max_presre format = 7.2
 	     from
 	        pokemon_stats_all_v2
-	     where
-	        maxcp>=1200
-	        and continent="America"
+         where
+            maxcp>=1200
+            and continent="America"
          group by
             type1
        ;
