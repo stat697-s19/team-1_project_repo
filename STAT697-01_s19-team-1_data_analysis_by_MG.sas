@@ -198,8 +198,8 @@ which none were found.
 
 proc sql;
     create table cnt_type_loc as
-	    select 
-	        distinct type1
+        select 
+            distinct type1
             ,city
             ,count(type1) as ttl_count
             ,sum(closetowater) as water_prox
