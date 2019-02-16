@@ -139,26 +139,27 @@ quit;
 %do i = 1 %to %eval(&numberOfIterations.);
 %let currentIteration = %scan(&iterationList.,&i.,|);
     proc sql; 
-		create table &currentIteration. as
+        create table &currentIteration. as
 	        select 
 	            distinct type1
 	            ,count(weather) as &currentIteration.
 	        from
-			    pokemon_stats_all_v2
-			where
-			    maxcp>=1200
-			    and continent="America"
-				and &column. = "&currentIteration."
-			group by 
-			    type1
+                pokemon_stats_all_v2
+            where
+                maxcp>=1200
+                and continent="America"
+                and &column. = "&currentIteration."
+            group by 
+                type1
                 ,weather
-	        ;
-			quit
-		;
+            ;
+            quit
+            ;
 
 	proc sort data = &currentIteration.;
-		by type1;
-	run; 
+        by type1;
+    run; 
+
 /* merge all weather tpye data sets to form singular weather data set
     data cnt_type_whtr_1;
         merge &currentIteration. cnt_type_whtr;
@@ -198,21 +199,23 @@ which none were found.
 proc sql;
     create table cnt_type_loc as
 	    select 
-	         distinct type1
-			,city
-	        ,count(type1) as ttl_count
-			,sum(closetowater) as water_prox
-			,sum(urban) as urban
-			,sum(suburban) as suburb
-			,sum(rural) as rural
-	     from
+	        distinct type1
+            ,city
+            ,count(type1) as ttl_count
+            ,sum(closetowater) as water_prox
+            ,sum(urban) as urban
+            ,sum(suburban) as suburb
+            ,sum(rural) as rural
+         from
 	        pokemon_stats_all_v2
 	     where
 	        maxcp>=1200
 	        and continent="America"
 	     group by
-		    type1 
-			,city
-		order by type1, ttl_count desc
+            type1 
+            ,city
+         order by 
+            type1
+            ,ttl_count desc
         ;
 quit;
