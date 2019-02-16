@@ -299,6 +299,7 @@ proc sql;
             ,pressure	
             ,weatherIcon
             ,population_density	
+			,closetowater
             ,urban	
             ,suburban	
             ,midurban	
@@ -325,6 +326,7 @@ proc sql;
             ,pressure	
             ,weatherIcon
             ,population_density	
+			,closetowater
             ,urban	
             ,suburban	
             ,midurban	
@@ -498,10 +500,12 @@ data pokemon_stats_all_v1;
         speed
         continent
         city
+		closetowater
         urban
         suburban
         midurban
         rural
+		weather
         temperature
         windspeed
         windbearing
@@ -523,10 +527,12 @@ data pokemon_stats_all_v1;
         speed
         continent
         city
+		closetowater
         urban
         suburban
         midurban
         rural
+		weather
         temperature
         windspeed
         windbearing
@@ -591,10 +597,12 @@ proc sql;
 	    ,B.speed
 	    ,C.continent
 	    ,C.city
+		,C.closetowater
 	    ,C.urban
 	    ,C.suburban
 	    ,C.midurban
 	    ,C.rural
+		,C.weather
 	    ,C.temperature
 	    ,C.windspeed
 	    ,C.windbearing

@@ -39,6 +39,35 @@ Limitations: There were no limitations identified due to the fact there were no
 missing values in the columns from the tables being referenced in this analysis.
 ;
 
+proc sql;
+    create table cnt_type_max_cp as
+        select 
+           distinct type1
+           ,count(*) as cnt_sight
+		   ,(count(*)/(
+                select 
+                    count(*) 
+                from 
+                    pokemon_stats_all_v2 
+                where 
+                    maxcp>=1200
+                    and continent="America")) 
+              as pcnt_sght_1200 format = percent8.
+		   ,(count(*)/(
+                select 
+                    count(*) 
+                from 
+                    pokemon_stats_all_v2))
+              as pcnt_ttl_sght format = percent7.6
+        from
+            pokemon_stats_all_v2
+        where
+            maxcp>=1200
+            and continent="America"
+		group by
+			type1
+        ;
+quit;
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
@@ -63,6 +92,82 @@ statistics methods. The only questionable data point is the accuracy of the
 weather metrics, but it will be difficult to QA for accuracy.
 ;
 
+proc sql;
+    create table cnt_type_whtr as
+	    select 
+	        distinct type1
+	        ,count(type1) as count
+			,avg(temperature) as temp format = 5.2
+			,min(temperature) as min_temp format = 5.2
+			,max(temperature) as max_temp format = 5.2
+			,avg(windSpeed) as wnd_spd format = 5.2
+			,min(windSpeed) as min_spd format = 5.2
+			,max(windSpeed) as max_spd format = 5.2
+			,avg(windBearing) as wnd_bear format = 6.2
+			,min(windBearing) as min_bear format = 6.2
+			,max(windBearing) as max_bear format = 6.2
+			,avg(pressure) as pressure format = 7.2
+			,min(pressure) as min_presre format = 7.2
+			,max(pressure) as max_presre format = 7.2
+	     from
+	        pokemon_stats_all_v2
+	     where
+	        maxcp>=1200
+	        and continent="America"
+	     group by
+		    type1
+       ;
+quit;
+
+*Aditional analysis can be done by counting the nominal weather type for each
+type of Pokemon when they appear, but does not provide additional insight after
+initial pass;
+
+proc sql noprint;
+	select 
+        distinct weather into :iterationList separated by "|"
+	from
+		pokemon_stats_all_v2;
+quit;
+
+%macro weather(
+    column
+);
+
+%let numberOfIterations = %sysfunc(countw(&iterationList.,|));
+
+%do i = 1 %to %eval(&numberOfIterations.);
+%let currentIteration = %scan(&iterationList.,&i.,|);
+    proc sql; 
+		create table &currentIteration. as
+	        select 
+	            distinct type1
+	            ,count(weather) as &currentIteration.
+	        from
+			    pokemon_stats_all_v2
+			where
+			    maxcp>=1200
+			    and continent="America"
+				and &column. = "&currentIteration."
+			group by 
+			    type1
+                ,weather
+	        ;
+			quit
+		;
+
+	proc sort data = &currentIteration.;
+		by type1;
+	run; 
+/* merge all weather tpye data sets to form singular weather data set
+    data cnt_type_whtr_1;
+        merge &currentIteration. cnt_type_whtr;
+	run;
+*/
+
+%end;
+%mend;
+%weather(weather);
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
@@ -89,3 +194,25 @@ this analysis were checked for missing values and unusual numeric values,
 which none were found.
 
 ;
+
+proc sql;
+    create table cnt_type_loc as
+	    select 
+	         distinct type1
+			,city
+	        ,count(type1) as ttl_count
+			,sum(closetowater) as water_prox
+			,sum(urban) as urban
+			,sum(suburban) as suburb
+			,sum(rural) as rural
+	     from
+	        pokemon_stats_all_v2
+	     where
+	        maxcp>=1200
+	        and continent="America"
+	     group by
+		    type1 
+			,city
+		order by type1, ttl_count desc
+        ;
+quit;
