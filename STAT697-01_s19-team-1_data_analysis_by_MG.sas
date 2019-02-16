@@ -94,7 +94,7 @@ weather metrics, but it will be difficult to QA for accuracy.
 
 proc sql;
     create table cnt_type_whtr as
-	    select 
+        select
             distinct type1
             ,count(type1) as count
             ,avg(temperature) as temp format = 5.2
