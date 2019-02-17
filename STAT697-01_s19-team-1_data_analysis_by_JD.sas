@@ -25,6 +25,21 @@ Limitations: There were no limitations identified due to the fact there were no
 missing values in the columns from the tables being referenced in this analysis.
 ;
 
+proc sql;
+	SELECT 
+		city
+		, count(pokemonId) 
+		as Total_pokemon
+	from 
+		combo_sights
+	group by 
+		city
+	order by 
+		Total_pokemon desc
+	;
+quit;
+
+
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
@@ -43,21 +58,45 @@ Limitations: There were no limitations identified due to the fact there were no
 missing values in the columns from the tables being referenced in this analysis.
 ;
 
+proc sql outobs=3;
+	select
+		dex
+		,attack
+		,continent
+	from
+		pokemon_stats_all_v1
+	where
+		continent = 'America'
+	order by
+		attack desc
+	;
+quit;
+
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 *
 Question: What is the average Defense scores of pokemons that appeared in 
-different weather?
+different species?
 
-Rationale: This shows the descriptive pokemon data of each weather   
+Rationale: This shows the descriptive pokemon data of each species
 
 Note: This compares the column "Defense" from Pokemon_Go_Stats and the column 
-"weather" from datasets sighting_09_02_2016 and sighting_09_03_2016.
+"species" from datasets sighting_09_02_2016 and sighting_09_03_2016.
 
 Limitations: There were no limitations identified due to the fact there were no 
 missing values in the columns from the tables being referenced in this analysis.
 ;
 
-
+proc sql;
+	select 
+		avg(defense)
+		,species
+	from 
+		pokemon_stats_all_v1
+	group by
+	 	species
+	;
+quit;
+		
