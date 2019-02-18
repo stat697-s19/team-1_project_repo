@@ -26,7 +26,7 @@ missing values in the columns from the tables being referenced in this analysis.
 ;
 
 proc sql;
-	SELECT 
+	select 
 		city
 		, count(pokemonId) 
 		as Total_pokemon
