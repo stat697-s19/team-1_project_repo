@@ -6,7 +6,7 @@
 * set relative file import path to current directory (using standard SAS trick);
 X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";
 
-* load external file generating "analytic file" dataset pokemon_stats_all_v2
+* load external file generating "analytic file" dataset poke_analytic_file
 from which all data analyses below begin;
 %include '.\STAT697-01_s19-team-1_data_preparation.sas';
 
@@ -43,7 +43,7 @@ proc sql;
         ,count(distinct _id) as Sightings
         ,calculated sightings/sight_type as sight_type_pct format = percent15.2
     from 
-        pokemon_stats_all_v2 aa
+        poke_analytic_file aa
 	left join
 	(select 
              type1
@@ -51,7 +51,7 @@ proc sql;
              ,sum(case when continent = "America" then 1
 		      else 0 end) as sight_type
 	from  
-	    pokemon_stats_all_v2 
+	    poke_analytic_file
 	group by 
 	    type1) bb
 	on aa.type1=bb.type1
@@ -75,7 +75,7 @@ proc sql;
     select 
         count(distinct _id) as sightings format = comma10.0
     from 
-        pokemon_stats_all_v2 
+        poke_analytic_file
     where 
         continent = "America"
     group by continent
