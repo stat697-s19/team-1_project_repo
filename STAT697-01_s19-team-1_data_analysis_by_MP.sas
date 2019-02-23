@@ -40,7 +40,7 @@ proc sql;
         ,maxcp    
         ,n_pokemon
         ,sight_type
-        ,count(distinct _id) as Sightings
+        ,count(*) as Sightings
         ,calculated sightings/sight_type as sight_type_pct format = percent15.2
     from 
         poke_analytic_file aa
@@ -73,7 +73,7 @@ quit;
 title "Total Sightings in America";
 proc sql;
     select 
-        count(distinct _id) as sightings format = comma10.0
+        count(*) as sightings format = comma10.0
     from 
         poke_analytic_file
     where 
@@ -266,24 +266,32 @@ title;
 footnote;
 
 title "Max CP Strenght in Predicting Sightings";
-footnote "Sightings and Max CP have statistical significant negative linear 
+footnote "Sightings and Max CP have statistical insignificant negative linear 
  relationship. As assume, the rarest sighted Pokemons have stronger 
  maximum combat power.  However, Max CP can only explain 13.8% of the 
- variability in sightings (r=0.1385,p<0.0001). MaxCP alone is not a strong 
- enough to predictor of sightings.";
+ variability in sightings (r=0.1385,p<0.0001). In addition, the assumptions of
+ constant variance and residual normality of a simple linear regression are 
+ not met.  Therefore, MaxCP alone cannot predict sightings.";
 
 proc glm
     data = pokemon_analysis
+	plots= RESIDUALS
     ;
     model
         sightings = maxcp
-	/solution
+	    /solution
     ;
     output 
         out = resids
-	r = res
+        r = res
     ;
 run;
 quit;
 title;
 footnote;
+
+proc univariate normal plot;
+/* Tells SAS to run tests of normality and give a QQ-plot */
+var res;
+run;
+/* Since Shapiro-Wilk  < 0.05, reject Ho, residuals are NOT normally distributed*/

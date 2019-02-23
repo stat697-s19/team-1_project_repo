@@ -689,10 +689,12 @@ proc sort data=poke_analytic_file nodupkey;
     by sighting_id;
 run;
 
-* verify that pokemon_stats_all_v1 and pokemon_stats_all_v3 are identical;
+* verify that pokemon_stats_all_v1 and poke_analytic_file are identical;
+/*
 proc compare
 	base=pokemon_stats_all_v1
 	compare=poke_analytic_file
 	novalues
 	;
 run;
+*/
