@@ -237,6 +237,8 @@ values.
 ;
 
 title "Correlation Between Max CP and Sightings";
+footnote "There is a weak negative linear relationship between
+ maximum combat power and sightings.";
 proc corr
     pearson spearman fisher (biasadj = no) nomiss
     data = pokemon_analysis
