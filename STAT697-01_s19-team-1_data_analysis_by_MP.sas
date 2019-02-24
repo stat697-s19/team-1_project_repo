@@ -6,7 +6,8 @@
 * set relative file import path to current directory (using standard SAS trick);
 X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";
 
-* load external file that will generate final analytic file;
+* load external file generating "analytic file" dataset poke_analytic_file
+from which all data analyses below begin;
 %include '.\STAT697-01_s19-team-1_data_preparation.sas';
 
 
@@ -39,10 +40,10 @@ proc sql;
         ,maxcp    
         ,n_pokemon
         ,sight_type
-        ,count(distinct _id) as Sightings
+        ,count(*) as Sightings
         ,calculated sightings/sight_type as sight_type_pct format = percent15.2
     from 
-        pokemon_stats_all_v2 aa
+        poke_analytic_file aa
 	left join
 	(select 
              type1
@@ -50,7 +51,7 @@ proc sql;
              ,sum(case when continent = "America" then 1
 		      else 0 end) as sight_type
 	from  
-	    pokemon_stats_all_v2 
+	    poke_analytic_file
 	group by 
 	    type1) bb
 	on aa.type1=bb.type1
@@ -72,9 +73,9 @@ quit;
 title "Total Sightings in America";
 proc sql;
     select 
-        count(distinct _id) as sightings format = comma10.0
+        count(*) as sightings format = comma10.0
     from 
-        pokemon_stats_all_v2 
+        poke_analytic_file
     where 
         continent = "America"
     group by continent
@@ -236,6 +237,8 @@ values.
 ;
 
 title "Correlation Between Max CP and Sightings";
+footnote "There is a weak negative linear relationship between
+ maximum combat power and sightings.";
 proc corr
     pearson spearman fisher (biasadj = no) nomiss
     data = pokemon_analysis
@@ -265,24 +268,32 @@ title;
 footnote;
 
 title "Max CP Strenght in Predicting Sightings";
-footnote "Sightings and Max CP have statistical significant negative linear 
+footnote "Sightings and Max CP have statistical insignificant negative linear 
  relationship. As assume, the rarest sighted Pokemons have stronger 
  maximum combat power.  However, Max CP can only explain 13.8% of the 
- variability in sightings (r=0.1385,p<0.0001). MaxCP alone is not a strong 
- enough to predictor of sightings.";
+ variability in sightings (r=0.1385,p<0.0001). In addition, the assumptions of
+ constant variance and residual normality of a simple linear regression are 
+ not met.  Therefore, MaxCP alone cannot predict sightings.";
 
 proc glm
     data = pokemon_analysis
+	plots= RESIDUALS
     ;
     model
         sightings = maxcp
-	/solution
+	    /solution
     ;
     output 
         out = resids
-	r = res
+        r = res
     ;
 run;
 quit;
 title;
 footnote;
+
+proc univariate normal plot;
+/* Tells SAS to run tests of normality and give a QQ-plot */
+var res;
+run;
+/* Since Shapiro-Wilk  < 0.05, reject Ho, residuals are NOT normally distributed*/
