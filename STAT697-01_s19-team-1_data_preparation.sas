@@ -483,89 +483,89 @@ quit;
   about 0.08 seconds of combined "real time" to execute and a maximum of
   about 10.5MB of memory (1450 KB for the data step vs. 10,500 KB for the
   proc sort step) on the computer they were tested on;
-data pokemon_stats_all_v1;
-    retain
-        dex
-        _id
-		species
-        type1
-        stamina
-        attack
-        defense
-        maxCP
-        base_egg_steps
-        capture_rate
-        experience_growth
-        is_legendary
-        speed
-        continent
-        city
-		closetowater
-        urban
-        suburban
-        midurban
-        rural
-		weather
-        temperature
-        windspeed
-        windbearing
-        pressure
-    ;
-    keep
-        dex
-        _id
-		species
-        type1
-        stamina
-        attack
-        defense
-        maxCP
-        base_egg_steps
-        capture_rate
-        experience_growth
-        is_legendary
-        speed
-        continent
-        city
-		closetowater
-        urban
-        suburban
-        midurban
-        rural
-		weather
-        temperature
-        windspeed
-        windbearing
-        pressure
-    ;
-    merge
-        poke_stat_final(in=a)
-        poke_stat_dtld_final(
-            drop  = attack
-                    defense
-					type1
-            rename=(
-                pokedex_number = dex
-                )
-            )
-        combo_sights(
-            rename=(
-                pokemonid = dex
-                )
-            )
-    ;
-    by dex
-    ;
-    if a
-    ;
+/*
+    data pokemon_stats_all_v1;
+	    retain
+	        dex
+	        _id
+			species
+	        type1
+	        stamina
+	        attack
+	        defense
+	        maxCP
+	        base_egg_steps
+	        capture_rate
+	        experience_growth
+	        is_legendary
+	        speed
+	        continent
+	        city
+			closetowater
+	        urban
+	        suburban
+	        midurban
+	        rural
+			weather
+	        temperature
+	        windspeed
+	        windbearing
+	        pressure
+	    ;
+	    keep
+	        dex
+	        _id
+			species
+	        type1
+	        stamina
+	        attack
+	        defense
+	        maxCP
+	        base_egg_steps
+	        capture_rate
+	        experience_growth
+	        is_legendary
+	        speed
+	        continent
+	        city
+			closetowater
+	        urban
+	        suburban
+	        midurban
+	        rural
+			weather
+	        temperature
+	        windspeed
+	        windbearing
+	        pressure
+	    ;
+	    merge
+	        poke_stat_final(in=a)
+	        poke_stat_dtld_final(
+	            drop  = attack
+	                    defense
+						type1
+	            rename=(
+	                pokedex_number = dex
+	                )
+	            )
+	        combo_sights(
+	            rename=(
+	                pokemonid = dex
+	                )
+	            )
+	    ;
+	    by dex
+	    ;
+	    if a
+	    ;
+    run;
 
-run;
-
-proc sort data=pokemon_stats_all_v1 nodupkey;
-    by dex 
-       _id
-    ;
-run;
+	proc sort data=pokemon_stats_all_v1 nodupkey;
+	    by _id
+	    ;
+	run;
+*/
 
 
 * combine poke_stat_final, poke_stat_dtld_final and combo_sights horizontally 
@@ -579,52 +579,122 @@ run;
 * note to learners: Based upon these results, the proc sql step is preferable
   if memory performance isn't critical. This is because less code is required,
   so it's faster to write and verify correct output has been obtained;
+/*
+	proc sql;
+	    create table pokemon_stats_all_v2 as
+	        select 
+		    A.dex
+		    ,C._id
+			,A.species
+		    ,A.type1
+		    ,A.stamina
+		    ,A.attack
+		    ,A.defense
+		    ,A.maxCP
+		    ,B.base_egg_steps
+		    ,B.capture_rate
+		    ,B.experience_growth
+		    ,B.is_legendary
+		    ,B.speed
+		    ,C.continent
+		    ,C.city
+			,C.closetowater
+		    ,C.urban
+		    ,C.suburban
+		    ,C.midurban
+		    ,C.rural
+			,C.weather
+		    ,C.temperature
+		    ,C.windspeed
+		    ,C.windbearing
+		    ,C.pressure
+	        from
+	            poke_stat_final as A
+	            left join
+	            poke_stat_dtld_final as B
+	            on A.dex=B.pokedex_number
+		    left join 
+		    combo_sights as C 
+	            on A.dex=C.pokemonId
+	        order by
+	            A.dex
+	            ,C._id
+	    ;
+	quit;
+*/
+* verify that pokemon_stats_all_v1 and pokemon_stats_all_v2 are identical;
+/*
+    proc compare
+	    base=pokemon_stats_all_v1
+	    compare=pokemon_stats_all_v2
+	    novalues
+	    ;
+	run;
+*/
+
+* combine poke_stat_final, poke_stat_dtld_final and combo_sights horizontally 
+  using proc sql and in-line views;
+* note: After running the proc sql step below several times and averaging
+  the fullstimer output in the system log, they tend to take about 0.06
+  seconds of "real time" to execute and about 5.8MB of memory on the computer
+  they were tested on. Consequently, the proc sql with in-line views step 
+  appears to take roughly the same amount of time to execute as the previous
+  steps above, but uses ~2-3x less memory;
 proc sql;
-    create table pokemon_stats_all_v2 as
-        select 
-	    A.dex
-	    ,C._id
-		,A.species
-	    ,A.type1
-	    ,A.stamina
-	    ,A.attack
-	    ,A.defense
-	    ,A.maxCP
-	    ,B.base_egg_steps
-	    ,B.capture_rate
-	    ,B.experience_growth
-	    ,B.is_legendary
-	    ,B.speed
-	    ,C.continent
-	    ,C.city
-		,C.closetowater
-	    ,C.urban
-	    ,C.suburban
-	    ,C.midurban
-	    ,C.rural
-		,C.weather
-	    ,C.temperature
-	    ,C.windspeed
-	    ,C.windbearing
-	    ,C.pressure
-        from
-            poke_stat_final as A
-            left join
-            poke_stat_dtld_final as B
-            on A.dex=B.pokedex_number
-	    left join 
-	    combo_sights as C 
-            on A.dex=C.pokemonId
-        order by
-            A.dex
-            ,C._id
+    create table poke_analytic_file as
+        select
+            C._id as sighting_id
+			,C.pokemonID
+            ,C.continent
+            ,C.city
+            ,C.closetowater
+            ,C.urban
+            ,C.suburban
+            ,C.midurban
+            ,C.rural
+            ,C.weather
+            ,C.temperature
+            ,C.windspeed
+            ,C.windbearing
+            ,C.pressure
+			,A.*
+			,B.*
+        from 
+            combo_sights as C
+        left join 
+            (select 
+                dex
+                ,species
+                ,type1
+                ,stamina
+                ,attack
+                ,defense
+                ,maxCP
+            from poke_stat_final) as A
+            on A.dex = C.pokemonID
+        left join
+            (select
+                 pokedex_number
+                 ,base_egg_steps
+                 ,capture_rate
+                 ,experience_growth
+                 ,is_legendary
+                 ,speed
+             from poke_stat_dtld_final) as B
+             on B.pokedex_number = C.pokemonID
     ;
 quit;
 
-* verify that pokemon_stats_all_v1 and pokemon_stats_all_v2 are identical;
-proc compare
-    base=pokemon_stats_all_v1
-    compare=pokemon_stats_all_v2
-    novalues
-    ;
+proc sort data=poke_analytic_file nodupkey;
+    by sighting_id;
 run;
+
+* verify that pokemon_stats_all_v1 and poke_analytic_file are identical;
+/*
+proc compare
+	base=pokemon_stats_all_v1
+	compare=poke_analytic_file
+	novalues
+	;
+run;
+*/

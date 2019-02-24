@@ -17,7 +17,7 @@ X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPA
 Question: How often (count and percentage of total sightings) did Pokemon with 
 the potential to have a max combat power (CP) of at least 1200 appear for each 
 type of Pokemon (i.e. fire, water, etc.) between the dates of 9/2/2016 and 
-9/3/2016 in the United States?
+9/3/2016 in North America?
 
 Rationale: A key aspect of Pokemon Go is to capture and assemble a balanced 
 team of Pokemon that you can use to take over gyms by fighting other Pokemon. 
@@ -39,6 +39,32 @@ Limitations: There were no limitations identified due to the fact there were no
 missing values in the columns from the tables being referenced in this analysis.
 ;
 
+title1 justify=left
+'Question: How often did Pokemon with the potential to have a max combat power 
+(CP) of at least 1200 appear for each type of Pokemon between the dates of 
+9/2/2016 and 9/3/2016 in the North America.'
+;
+
+title2 justify=left
+'Rationale: A key aspect of Pokemon Go is to capture and assemble a balanced 
+team of Pokemon that you can use to take over gyms by fighting other Pokemon. 
+One of the primary metrics to assess if you captured a strong Pokemon is combat 
+power (cp). The higher the CP, the better suited it is for battle. Based on 
+ my experience, a respectable CP starts around 1200.'
+;
+
+footnote1 justify=left
+'Normal, Fire, & Fairy made up 62% of the sightings with a 1200 max CP potential 
+ during these two days. These 3 types with a 1200 max CP potential only made up 
+3% of the total sightings.'
+;
+
+footnote2 justify=left
+'The 3 rarest type of Pokemon with a potential of a 1200 max CP were Dragons, 
+ Ghosts, and Electric. Combined they only made up less than 3% of Pokemon
+ sightings with a max CP of 1200.'
+;
+
 proc sql;
     create table cnt_type_max_cp as
         select 
@@ -48,7 +74,7 @@ proc sql;
                 select 
                     count(*) 
                 from 
-                    pokemon_stats_all_v2 
+                    poke_analytic_file 
                 where 
                     maxcp>=1200
                     and continent="America")) 
@@ -57,10 +83,10 @@ proc sql;
                 select 
                     count(*) 
                 from 
-                    pokemon_stats_all_v2))
+                    poke_analytic_file))
            as pcnt_ttl_sght format = percent7.6
         from
-            pokemon_stats_all_v2
+            poke_analytic_file
         where
             maxcp>=1200
             and continent="America"
@@ -69,13 +95,19 @@ proc sql;
         ;
 quit;
 
+proc print data=cnt_type_max_cp; 
+run;
+
+title;
+footnote;
+
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 *
 Question: What were the average weather conditions when Pokemon with a 
 potential max CP of 1200 or greater were sighted during 9/2/2016 through 
-9/3/2016 in the United States?
+9/3/2016 in North America?
 
 Rationale: When the game was launched, it was rumored that certain Pokemon
 only appeared when real world conditions were met like a specific time of day 
@@ -90,6 +122,35 @@ Limitations: All columns being used in this analysis contained no missing values
 and no suspicious numeric values were identified using basic descriptive 
 statistics methods. The only questionable data point is the accuracy of the 
 weather metrics, but it will be difficult to QA for accuracy.
+;
+
+title1 justify=left
+'Question: What were the average weather conditions when Pokemon with a 
+potential max CP of 1200 or greater were sighted during 9/2/2016 through 
+9/3/2016 in the North America?'
+;
+
+title2 justify=left
+'Rationale: When the game was launched, it was rumored that certain Pokemon
+only appeared when real world conditions were met like a specific time of day 
+and weather conditions. This will help determine if some Pokemon can only be 
+seen or are more prevalent during specific weather conditions.'
+;
+
+footnote1 justify=left
+'At first glance, temperature appears to have any distinguishable affects on
+Pokemon appearances based on type.'
+;
+
+footnote2 justify=left
+'For example, average temperature for ghost and ice type was lower compared to
+ other tpyes, which aligns with the game environments where these Pokemone were
+ found.'
+;
+
+footnote3 justify=left
+'On the other hand, rock and fire types had the highest average temperature when
+ they were sighted.'
 ;
 
 proc sql;
@@ -110,7 +171,7 @@ proc sql;
             ,min(pressure) as min_presre format = 7.2
             ,max(pressure) as max_presre format = 7.2
          from
-            pokemon_stats_all_v2
+            poke_analytic_file
          where
             maxcp>=1200
             and continent="America"
@@ -119,62 +180,68 @@ proc sql;
        ;
 quit;
 
+proc print data = cnt_type_whtr;
+run;
+
+title;
+footnote;
+
 *Aditional analysis can be done by counting the nominal weather type for each
 type of Pokemon when they appear, but does not provide additional insight after
 initial pass;
+/*
+	proc sql noprint;
+	    select 
+	        distinct weather into :iterationList separated by "|"
+	    from
+	        poke_analytic_file;
+	quit;
 
-proc sql noprint;
-    select 
-        distinct weather into :iterationList separated by "|"
-    from
-        pokemon_stats_all_v2;
-quit;
+	%macro weather(
+	    column
+	);
 
-%macro weather(
-    column
-);
+	%let numberOfIterations = %sysfunc(countw(&iterationList.,|));
 
-%let numberOfIterations = %sysfunc(countw(&iterationList.,|));
+	%do i = 1 %to %eval(&numberOfIterations.);
+	%let currentIteration = %scan(&iterationList.,&i.,|);
+	    proc sql; 
+	        create table &currentIteration. as
+	            select 
+	                distinct type1
+	                ,count(weather) as &currentIteration.
+	            from
+	                poke_analytic_file
+	            where
+	                maxcp>=1200
+	                and continent="America"
+	                and &column. = "&currentIteration."
+	            group by 
+	                type1
+	                ,weather
+	            ;
+	     quit
+	     ;
 
-%do i = 1 %to %eval(&numberOfIterations.);
-%let currentIteration = %scan(&iterationList.,&i.,|);
-    proc sql; 
-        create table &currentIteration. as
-            select 
-                distinct type1
-                ,count(weather) as &currentIteration.
-            from
-                pokemon_stats_all_v2
-            where
-                maxcp>=1200
-                and continent="America"
-                and &column. = "&currentIteration."
-            group by 
-                type1
-                ,weather
-            ;
-     quit
-     ;
-
-    proc sort data = &currentIteration.;
-        by type1;
-    run; 
-
+	    proc sort data = &currentIteration.;
+	        by type1;
+	    run; 
+*/
 /* merge all weather tpye data sets to form singular weather data set
     data cnt_type_whtr_1;
         merge &currentIteration. cnt_type_whtr;
 	run;
 */
-
-%end;
-%mend;
-%weather(weather);
-
+/*
+	%end;
+	%mend;
+	%weather(weather);
+*/
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 *
-Question: Which cities in the United States during 9/2/2016 to 9/3/2016 saw the 
+Question: Which cities in the North America during 9/2/2016 to 9/3/2016 saw the 
 most (count and percentage of total sightings) Pokemon with a potential max CP 
 of 1200 or greater for each type?
 
@@ -196,6 +263,30 @@ which none were found.
 
 ;
 
+title1 justify=left
+'Question: Which cities in the North America during 9/2/2016 to 9/3/2016 saw the 
+most Pokemon with a potential max CP of 1200 or greater for each type?'
+;
+
+title2 justify=left
+'Rationale: Geography influences the types of Pokemon that spawn in an area. For 
+example, beaches typically see a variety of water based Pokemon. This analysis 
+would help identify where certain Pokemon with a potential max CP of 1200 or 
+greater can be found.'
+;
+
+footnote1 justify=left
+"New York seemed to have the most activity for each type of Pokemon with a 
+ potential max CP of 1200. A possibly reason for this is due to New York's 
+ diverse terrain (i.e. close to water, large urban park, etc) and population
+ density."
+;
+
+footnote2 justify=left
+'Interestingly, 40% of dragon (extremely rare) sightings occurred in New 
+ York during these 2 days in North America.'
+;
+
 proc sql;
     create table cnt_type_loc as
         select 
@@ -207,7 +298,7 @@ proc sql;
             ,sum(suburban) as suburb
             ,sum(rural) as rural
          from
-            pokemon_stats_all_v2
+            poke_analytic_file
          where
             maxcp>=1200
             and continent="America"
@@ -219,3 +310,9 @@ proc sql;
             ,ttl_count desc
         ;
 quit;
+
+proc print data=cnt_type_loc;
+run;
+
+title;
+footnote;

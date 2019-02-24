@@ -6,7 +6,8 @@
 * set relative file import path to current directory (using standard SAS trick);
 X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";
 
-* load external file that will generate final analytic file;
+* load external file generating "analytic file" dataset combo_sights and 
+pokemon_stats_all_v1, from which all data analyses below begin;
 %include '.\STAT697-01_s19-team-1_data_preparation.sas';
 
 
