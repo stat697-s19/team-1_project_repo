@@ -9,7 +9,7 @@ X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPA
 * load external file that will generate final analytic file;
 %include '.\STAT697-01_s19-team-1_data_preparation.sas';
 
-
+%let condition =  maxcp>=1200 and continent='America';
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
@@ -41,22 +41,22 @@ missing values in the columns from the tables being referenced in this analysis.
 
 title1 justify=left
 'Question: How often did Pokemon with the potential to have a max combat power 
-(CP) of at least 1200 appear for each type of Pokemon between the dates of 
-9/2/2016 and 9/3/2016 in the North America.'
+ (CP) of at least 1200 appear for each type of Pokemon between the dates of 
+ 9/2/2016 and 9/3/2016 in the North America.'
 ;
 
 title2 justify=left
 'Rationale: A key aspect of Pokemon Go is to capture and assemble a balanced 
-team of Pokemon that you can use to take over gyms by fighting other Pokemon. 
-One of the primary metrics to assess if you captured a strong Pokemon is combat 
-power (cp). The higher the CP, the better suited it is for battle. Based on 
+ team of Pokemon that you can use to take over gyms by fighting other Pokemon. 
+ One of the primary metrics to assess if you captured a strong Pokemon is combat 
+ power (cp). The higher the CP, the better suited it is for battle. Based on 
  my experience, a respectable CP starts around 1200.'
 ;
 
 footnote1 justify=left
 'Normal, Fire, & Fairy made up 62% of the sightings with a 1200 max CP potential 
  during these two days. These 3 types with a 1200 max CP potential only made up 
-3% of the total sightings.'
+ 3% of the total sightings.'
 ;
 
 footnote2 justify=left
@@ -88,8 +88,7 @@ proc sql;
         from
             poke_analytic_file
         where
-            maxcp>=1200
-            and continent="America"
+            &condition.
         group by
             type1
         ;
@@ -100,6 +99,31 @@ run;
 
 title;
 footnote;
+
+title1 
+'Frequency of Appearance by Pokemon Type with Max CP Potential >= 1200 by Continent';
+
+title2 justify=left 
+'This chart is a visual representation of the previous table, but also includes 
+ other continents for comparison.';
+
+footnote1 justify=left
+'Normal type Pokemon had the most appearances with a Max CP of at least 1200 on
+ all continents.';
+
+footnote2 justify=left
+'The second and third most frequently spotted Pokemon with the criteria above 
+ varies by continent.';
+;
+
+proc sgplot data=poke_analytic_file (where=(maxcp>=1200));
+    vbar type1/group=Continent groupdisplay=cluster categoryorder=respdesc;
+    xaxis display=(NOLABEL);
+run;
+
+title;
+footnote;
+
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
@@ -126,20 +150,20 @@ weather metrics, but it will be difficult to QA for accuracy.
 
 title1 justify=left
 'Question: What were the average weather conditions when Pokemon with a 
-potential max CP of 1200 or greater were sighted during 9/2/2016 through 
-9/3/2016 in the North America?'
+ potential max CP of 1200 or greater were sighted during 9/2/2016 through 
+ 9/3/2016 in the North America?'
 ;
 
 title2 justify=left
 'Rationale: When the game was launched, it was rumored that certain Pokemon
-only appeared when real world conditions were met like a specific time of day 
-and weather conditions. This will help determine if some Pokemon can only be 
-seen or are more prevalent during specific weather conditions.'
+ only appeared when real world conditions were met like a specific time of day 
+ and weather conditions. This will help determine if some Pokemon can only be 
+ seen or are more prevalent during specific weather conditions.'
 ;
 
 footnote1 justify=left
 'At first glance, temperature appears to have any distinguishable affects on
-Pokemon appearances based on type.'
+ Pokemon appearances based on type.'
 ;
 
 footnote2 justify=left
@@ -173,14 +197,48 @@ proc sql;
          from
             poke_analytic_file
          where
-            maxcp>=1200
-            and continent="America"
+             &condition.
          group by
             type1
        ;
 quit;
 
 proc print data = cnt_type_whtr;
+run;
+
+title;
+footnote;
+
+title1 justify=left;
+'There can be some validity to the theory that temperature can influence the 
+ type of Pokemon based on weather and/or temperature by looking at some of the
+ average temperature during sightings by type.'
+;
+
+title2 justify=left;
+'As an additional analysis, a TTest was conducted between Fire and Ice type 
+ Pokemon and the mean temperature of the two groups when they appeared to 
+ determine if there is some validity to the claim above.'
+;
+
+footnote1 justify=left
+'The p-value was <.0001, meaning that the mean difference between the two groups
+ is significant. This is strong evidence that temperature is a factor when Ice 
+ type Pokemon appear in colder weather and vice versa for Fire type in warmer
+ temperatures.'
+;
+
+footnote2 justify=left
+'An increase sample size of Ice type Pokemon would help future analysis and 
+ additional comparisons of the mean temperature of other types of Pokemon need 
+ to conducted for increase credibility to the hypothesis that certain types of
+ Pokemon are more likely to appear in certain weather conditions and 
+ temperature.'
+;
+
+proc ttest data=poke_analytic_file (where=(&condition. and type1 in ('Fire', 'Ice')));; 
+     class type1; 
+     var temperature; 
 run;
 
 title;
@@ -300,8 +358,7 @@ proc sql;
          from
             poke_analytic_file
          where
-            maxcp>=1200
-            and continent="America"
+             &condition.
          group by
             type1 
             ,city
