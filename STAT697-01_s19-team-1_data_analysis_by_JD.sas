@@ -15,7 +15,7 @@ which all data analyses below begin;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 
-title1 justify=left
+title1 justify=left  
 'Question: Which city has the highest number of pokemon appeared?'
 ;
 
