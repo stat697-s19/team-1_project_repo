@@ -60,7 +60,7 @@ proc sql;
 	    poke_analytic_file
 	group by 
 	    type1) bb
-	on aa.type1=bb.type1
+    on aa.type1=bb.type1
     where 
         continent = "America"
     group by 
@@ -76,19 +76,6 @@ proc sql;
     ;
 quit;
 
-/*
-title "Total Sightings in America";
-proc sql;
-    select 
-        count(*) as sightings format = comma10.0
-    from 
-        poke_analytic_file
-    where 
-        continent = "America"
-    group by continent
-    ;
-quit;
-*/
 data type_top5 ;
     label
         type1     = "Type"
@@ -151,7 +138,6 @@ title2 justify=left
 footnote1 justify=left
 'Beedrill, Dragonite, Jolteon, Clefable, Primeape, Arcanine, Haunter, Exeggutor, Marowak, Jynx, Wigglytuff, Nidoqueen, Mr. Mime, Omastar and Blastoise had the lowest sightings in America within their pokemon type.'
 ;
-'Pinsir, Dragonite, Jolteon, Clefable, Primeape, Arcanine, Haunter, Exeggutor, Rhydon, Jynx, Snorlax, Nidoqueen, Hypno, Golem and Slowbro had the highest MaxCP in their pokemon type.'
 
 footnote2 justify=left
 "Nine out of fifteen or 60% were pokemons with the highest Max CP. This indicates that pokemons with the highest Max CP aren't always the rarest."
@@ -171,7 +157,7 @@ be excluded from this analysis, since they are potentially missing data values.
 proc sort data = pokemon_analysis;
     by  type1 
         sight_type_pct
-	;
+    ;
 run;
 	    
 data type_top5 ;
@@ -329,7 +315,7 @@ footnote;
 
 proc glm
     data = pokemon_analysis
-	plots= RESIDUALS
+    plots= RESIDUALS
     ;
     model
         sightings = maxcp
