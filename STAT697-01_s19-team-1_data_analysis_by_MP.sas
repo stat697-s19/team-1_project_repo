@@ -15,18 +15,15 @@ from which all data analyses below begin;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 title1 justify=left
-'Question: Within each Pokemon type, what are the top 5 strongest Pokemons based on combat power (CP)?' 
+'Question: Within each Pokemon type, what are the top strongest Pokemons based on combat power (CP) sighted in America?' 
 ;
 
 title2 justify=left
 'Rationale: To determine which Pokemons are worth catching for battles. The combat power (CP) determines the strength of a Pokemon during battle.'
 ;
 
-footnote1 justify=left 
-'There are Pokemons that are have never been sighted. Thusly, we adjust our research question to Top 5 within each Type that have been sighted in America." 
-;
-footnote2 justify=left
-'Within each type, the Pokemon with highest CP were also most sighted and vice versa.'
+footnote1 justify=left
+'Pinsir, Dragonite, Jolteon, Clefable, Primeape, Arcanine, Haunter, Exeggutor, Rhydon, Jynx, Snorlax, Nidoqueen, Hypno, Golem and Slowbro had the highest MaxCP in their pokemon type.'
 ;
  
 *
@@ -115,7 +112,7 @@ data type_top5 ;
     seq_id+1
     ;
     if 
-        seq_id<=5 then output 
+        seq_id<=1 then output 
     ;
     format
         sight_type_pct percent15.2	    
@@ -144,7 +141,7 @@ footnote;
 *******************************************************************************;
 
 title1 justify=left
-'Question: What are the least common Pokemon sightings in each Pokemon type?'
+'Question: What are the least common Pokemon sightings in each Pokemon type in America?'
 ;
 
 title2 justify=left
@@ -152,11 +149,12 @@ title2 justify=left
 ;
 
 footnote1 justify=left
-'There are Pokemons that are have never been sighted. Thusly, we adjust our research question to Top 5 rarest sightings in America for each Type.'
+'Beedrill, Dragonite, Jolteon, Clefable, Primeape, Arcanine, Haunter, Exeggutor, Marowak, Jynx, Wigglytuff, Nidoqueen, Mr. Mime, Omastar and Blastoise had the lowest sightings in America within their pokemon type.'
 ;
+'Pinsir, Dragonite, Jolteon, Clefable, Primeape, Arcanine, Haunter, Exeggutor, Rhydon, Jynx, Snorlax, Nidoqueen, Hypno, Golem and Slowbro had the highest MaxCP in their pokemon type.'
 
 footnote2 justify=left
-'Within each type, the Pokemon with highest CP were also most sighted and vice versa."
+"Nine out of fifteen or 60% were pokemons with the highest Max CP. This indicates that pokemons with the highest Max CP aren't always the rarest."
 ;
  
 *
@@ -170,6 +168,44 @@ order and print top 5 of each "type1".
 Limitations: Values of "Average % of sightings" equal to zero should
 be excluded from this analysis, since they are potentially missing data values.
 ;
+proc sort data = pokemon_analysis;
+    by  type1 
+        sight_type_pct
+	;
+run;
+	    
+data type_top5 ;
+    label
+        type1     = "Type"
+        n_pokemon = "# of Unique Pokemon"
+        seq_id    = "Rank"
+        dex       = "Pokemon ID"
+        species   = "Pokemon"
+        maxcp     = "Max CP"
+        sightings = "# of Sightings"
+        sight_type_pct="% of Type"
+    ;
+    set 
+        pokemon_analysis
+    ;
+    by 
+        type1
+    ;
+    if 
+        first.type1 then seq_id=0
+    ;
+    seq_id+1
+    ;
+    if 
+        seq_id<=1 then output 
+    ;
+    format
+        sight_type_pct percent15.2	    
+	maxcp comma10.0
+    ;
+run;
+
+
 proc sort 
     data = type_top5
     ; 
@@ -202,7 +238,7 @@ data type_top5 ;
     seq_id+1
     ;
     if 
-        seq_id<=5 then output 
+        seq_id<=1 then output 
     ;
     format
         sight_type_pct percent15.2
