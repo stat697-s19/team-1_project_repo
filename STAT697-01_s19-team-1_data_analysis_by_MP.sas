@@ -14,13 +14,22 @@ from which all data analyses below begin;
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
+title1 justify=left
+'Question: Within each Pokemon type, what are the top 5 strongest Pokemons based on combat power (CP)?' 
+;
+
+title2 justify=left
+'Rationale: To determine which Pokemons are worth catching for battles. The combat power (CP) determines the strength of a Pokemon during battle.'
+;
+
+footnote1 justify=left 
+'There are Pokemons that are have never been sighted. Thusly, we adjust our research question to Top 5 within each Type that have been sighted in America." 
+;
+footnote2 justify=left
+'Within each type, the Pokemon with highest CP were also most sighted and vice versa.'
+;
+ 
 *
-Question: Within each Pokemon type, what are the top 5 strongest Pokemons based 
-on combat power (CP)? 
-
-Rationale: To determine which Pokemons are worth catching for battles. The 
-combat power (CP) determines the strength of a Pokemon during battle.
-
 Note: Rank order CP from Pokemon_GO_Stats dataset for each primary Pokemon type, 
 i.e. fire, water, poison, rock, etc. and select the top 5 pokemon in each 
 segment.  Some Pokemon may have combination of type, thusly we only look at the
@@ -70,6 +79,7 @@ proc sql;
     ;
 quit;
 
+/*
 title "Total Sightings in America";
 proc sql;
     select 
@@ -81,8 +91,7 @@ proc sql;
     group by continent
     ;
 quit;
-title;
-
+*/
 data type_top5 ;
     label
         type1     = "Type"
@@ -114,11 +123,6 @@ data type_top5 ;
     ;
 run;
 
-title "Strongest 5 Pokemons Sighted within Each Type";
-footnote "There are Pokemons that are have never been sighted. Thusly, we 
- adjust our research question to Top 5 within each Type that have been sighted 
- in America. Within each type, the Pokemon with highest CP were also most 
- sighted and vice versa.";
 proc print 
     data = type_top5 noobs label
     ;
@@ -138,12 +142,24 @@ footnote;
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
+
+title1 justify=left
+'Question: What are the least common Pokemon sightings in each Pokemon type?'
+;
+
+title2 justify=left
+'Rationale: To determine which Pokemons are least frequently sighted. What makes them rare? Basically are the rarest sighting the most desireable for battle?'
+;
+
+footnote1 justify=left
+'There are Pokemons that are have never been sighted. Thusly, we adjust our research question to Top 5 rarest sightings in America for each Type.'
+;
+
+footnote2 justify=left
+'Within each type, the Pokemon with highest CP were also most sighted and vice versa."
+;
+ 
 *
-Question: What are the least common Pokemon sightings in each Pokemon type?
-
-Rationale: To determine which Pokemons are least frequently sighted. What makes
-them rare? Basically are the rarest sighting the most desireable for battle?
-
 Note: Firstly, full join sight_9_2_16 & sight_9_3_16 tables into one table.
 Filter the the column continent using like statement "America%". Summarize by
 "pokemonid" column then join to column "dex" in the poke_stat table. Summarize
@@ -194,12 +210,6 @@ data type_top5 ;
     ;
 run;
 
-
-title "Rarest 5 Pokemons Sightings within Each Type";
-footnote "There are Pokemons that are have never been sighted. Thusly, we 
- adjust our research question to Top 5 rarest sightings in America for
- each Type. Within each type, the Pokemon with highest CP were also most 
- sighted and vice versa.";
 proc print 
     data = type_top5 noobs label
     ;
@@ -219,12 +229,25 @@ footnote;
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
+
+title1 justify=left
+'Question: Are the rarest sightings the most desireable Pokemons for battle?'
+;
+
+title2 justify=left
+'Rationale: To answer the question what makes a Pokemon rare? Are they rarest Pokemon sightings the most desirable for battle?'
+;
+
+footnote1 justify=left
+'Assuming the variables MaxCP and Sightings are normally distributed, the above inferential analysis shows that there is a fairly weak negative correlation between MaxCP and Sightings.'
+;
+ 
+footnote2 justify=left
+'Sightings and Max CP have statistical insignificant negative linear relationship. As assume, the rarest sighted Pokemons have stronger maximum combat power.  However, Max CP can only explain 13.8% of the 
+ variability in sightings (r=0.1385,p<0.0001). In addition, the assumptions of constant variance and residual normality of a simple linear regression are not met.  Therefore, MaxCP alone cannot predict sightings.'
+;
+
 *
-Question: Are the rarest sightings the most desireable Pokemons for battle?
-
-Rationale: To answer the question what makes a Pokemon rare? Are they rarest
-Pokemon sightings the most desirable for battle?
-
 Note: The most desirable Pokemons are the ones with highest combat power (CP).
 Therefore, we can use the table generated from research question 2 to also 
 determine if there is a correlation between "Maximum CP" and 
@@ -236,9 +259,6 @@ should be excluded from this analysis, since they are potentially missing data
 values.
 ;
 
-title "Correlation Between Max CP and Sightings";
-footnote "There is a weak negative linear relationship between
- maximum combat power and sightings.";
 proc corr
     pearson spearman fisher (biasadj = no) nomiss
     data = pokemon_analysis
@@ -248,9 +268,13 @@ proc corr
         sightings
     ;
 run;
-title;
-footnote ;
 
+title1 justify=left
+'Plot illustrating the negative correlation between MaxCP and Sightings.'
+;
+footnote1 justify=left
+'In the above plot, we can see how values of Sightings tend to decrease as values of MaxCP increase.'
+;
 
 proc sgplot
     data = pokemon_analysis
@@ -266,14 +290,6 @@ proc sgplot
 run;
 title;
 footnote;
-
-title "Max CP Strenght in Predicting Sightings";
-footnote "Sightings and Max CP have statistical insignificant negative linear 
- relationship. As assume, the rarest sighted Pokemons have stronger 
- maximum combat power.  However, Max CP can only explain 13.8% of the 
- variability in sightings (r=0.1385,p<0.0001). In addition, the assumptions of
- constant variance and residual normality of a simple linear regression are 
- not met.  Therefore, MaxCP alone cannot predict sightings.";
 
 proc glm
     data = pokemon_analysis
