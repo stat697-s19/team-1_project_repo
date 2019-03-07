@@ -294,26 +294,3 @@ proc sgplot
 run;
 title;
 footnote;
-/*
-proc glm
-    data = pokemon_analysis
-    plots= RESIDUALS
-    ;
-    model
-        sightings = maxcp
-	    /solution
-    ;
-    output 
-        out = resids
-        r = res
-    ;
-run;
-quit;
-title;
-footnote;
-
-proc univariate normal plot;
-var res;
-run;
-*/
-/* Since Shapiro-Wilk  < 0.05, reject Ho, residuals are NOT normally distributed*/
