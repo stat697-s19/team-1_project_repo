@@ -33,6 +33,13 @@ sighting_09_03_2016 to the column "pokemonId" from the same datasets.
 
 Limitations: There were no limitations identified due to the fact there were no 
 missing values in the columns from the tables being referenced in this analysis.
+
+Methodology: Use GROUP BY clause in proc sql to output the total number of 
+pokemon by city, and then use ORDER BY to sort the Total_pokemon variable in 
+descending order.
+
+Followup Steps: More carefully clean values in order to filter out any possible
+illegal values, and better handle missing data.
 ;
 
 proc sql;
@@ -49,7 +56,9 @@ proc sql;
 	;
 quit;
 
-
+* clear titles/footnotes;
+title;
+footnote;
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
@@ -73,6 +82,13 @@ Note: This compares the column "Attack" from Pokemon_Go_Stats and the column
 
 Limitations: There were no limitations identified due to the fact there were no 
 missing values in the columns from the tables being referenced in this analysis.
+
+Methodology: Use WHERE clause in proc sql to constrain the continent value to
+"America", and then use ORDER BY to sort the value of attack in descending 
+order.Use outobs= to limit the number of output.Use PROC GLM for modeling.
+
+Followup Steps: More carefully clean values in order to filter out any possible
+illegal values, and better handle missing data.
 ;
 
 proc sql outobs=3;
@@ -97,6 +113,9 @@ footnote1 justify=left
 "From the ANOVA table, we find that the p value is very small, indicating that there is a relationship between defense score and attack score"
 ;
 
+*Use PROC GLM to develop a regression model for analyzing the relationship between 
+values of defense and attack;
+
 proc glm
 	data= poke_analytic_file
 	;
@@ -105,7 +124,9 @@ proc glm
 	;
 run;
 		
-
+* clear titles/footnotes;
+title;
+footnote;
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
@@ -129,6 +150,13 @@ Note: This compares the column "Defense" from Pokemon_Go_Stats and the column
 
 Limitations: There were no limitations identified due to the fact there were no 
 missing values in the columns from the tables being referenced in this analysis.
+
+Methodology: Use PROC SQL to create a table containing the average values of 
+defense scores for each species, and then use PROC SGPLOT to plot a bar graph
+to visualize the result.
+
+Followup Steps: Try other methods of data visualization that allows us to see
+the results and generate insights easier.
 ;
 
 proc sql;
@@ -167,3 +195,6 @@ proc sgplot
     ;
 run;
 		
+* clear titles/footnotes;
+title;
+footnote;
