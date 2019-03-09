@@ -35,7 +35,15 @@ primary type.
 Limitations: Values of "Maximum CP" equal to zero should be excluded from this 
 analysis, since they are potentially missing data values. The sights data is
 only based on two days data.
+
+Methodology: Use proc sql to create a temporary sorted table in descending
+order by MaxCP, and calculate sightings rate per each pokemon type. Then
+use proc report to print the first five rows of the sorted dataset.
+
+Followup Steps: More carefully clean values in order to filter out any possible
+illegal values, and better handle missing data.
 ;
+
 
 proc sql;
     create table pokemon_analysis as
@@ -85,7 +93,7 @@ data type_top5 ;
         species   = "Pokemon"
         maxcp     = "Max CP"
         sightings = "# of Sightings"
-        sight_type_pct="% of Type"
+        sight_type_pct="% of Sightings in Type"
     ;
     set 
         pokemon_analysis
@@ -107,17 +115,17 @@ data type_top5 ;
     ;
 run;
 
-proc print 
-    data = type_top5 noobs label
+
+proc report 
+    data = type_top5
     ;
-    var 
+    columns
         type1 
-	n_pokemon 
-	seq_id 
-	species 
-	maxcp 
-	sightings 
-	sight_type_pct
+        n_pokemon 
+        species 
+        maxcp 
+        sightings 
+        sight_type_pct
     ;
 run;
 title;
@@ -140,7 +148,7 @@ footnote1 justify=left
 ;
 
 footnote2 justify=left
-"Nine out of fifteen or 60% were pokemons with the highest Max CP. This indicates that pokemons with the highest Max CP aren't always the rarest."
+"Nine out of fifteen or 60% were pokemons with the highest Max CP. This indicates that pokemons with the highest Max CP are not the rarest sightings."
 ;
  
 *
@@ -153,8 +161,17 @@ order and print top 5 of each "type1".
 
 Limitations: Values of "Average % of sightings" equal to zero should
 be excluded from this analysis, since they are potentially missing data values.
+
+Methodology: Use proc sort on previous temporary table and sort by 
+sightings. Then use proc report to print the first five rows of the sorted 
+dataset.
+
+Followup Steps: More carefully clean values in order to filter out any possible
+illegal values, and better handle missing data.
 ;
-proc sort data = pokemon_analysis;
+proc sort 
+    data = pokemon_analysis
+    ;
     by  type1 
         sight_type_pct
     ;
@@ -169,7 +186,7 @@ data type_top5 ;
         species   = "Pokemon"
         maxcp     = "Max CP"
         sightings = "# of Sightings"
-        sight_type_pct="% of Type"
+        sight_type_pct="% of Sightings in Type"
     ;
     set 
         pokemon_analysis
@@ -191,62 +208,20 @@ data type_top5 ;
     ;
 run;
 
-
-proc sort 
+proc report 
     data = type_top5
-    ; 
-    by 
+    ;
+    columns
         type1 
-        sightings
-    ; 
-run;
-
-data type_top5 ;
-    label
-        type1     = "Type"
-        n_pokemon = "# of Unique Pokemon"
-        seq_id    = "Rank"
-        dex       = "Pokemon ID"
-        species   = "Pokemon"
-        maxcp     = "Max CP"
-        sightings = "# of Sightings"
-        sight_type_pct="% of Type"
-    ;
-    set 
-        type_top5
-    ;
-    by 
-        type1
-    ;
-    if 
-        first.type1 then seq_id=0
-    ;
-    seq_id+1
-    ;
-    if 
-        seq_id<=1 then output 
-    ;
-    format
-        sight_type_pct percent15.2
-        maxcp comma10.0
-    ;
-run;
-
-proc print 
-    data = type_top5 noobs label
-    ;
-    var 
-        type1 
-	n_pokemon 
-	seq_id 
-	species 
-	maxcp 
-	sightings 
-	sight_type_pct
+        n_pokemon 
+        species 
+        maxcp 
+        sightings 
+        sight_type_pct
     ;
 run;
 title;
-footnote;
+footnote; 
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
@@ -279,6 +254,13 @@ whether "Maximum CP" can predict "Average % of sightings".
 Limitations: Values of "Maximum CP" and  "Average % of sightings" equal to zero 
 should be excluded from this analysis, since they are potentially missing data
 values.
+
+Methodology: Use proc corr to perform a correlation analysis, and then use proc
+sgplot to output a scatterplot, illustrating the correlation.
+
+Followup Steps: A possible follow-up to this approach could use a more formal
+inferential technique like linear regression, which could be used to determine
+more than the existence of a linear relationship.
 ;
 
 proc corr
@@ -312,26 +294,3 @@ proc sgplot
 run;
 title;
 footnote;
-
-proc glm
-    data = pokemon_analysis
-    plots= RESIDUALS
-    ;
-    model
-        sightings = maxcp
-	    /solution
-    ;
-    output 
-        out = resids
-        r = res
-    ;
-run;
-quit;
-title;
-footnote;
-
-proc univariate normal plot;
-/* Tells SAS to run tests of normality and give a QQ-plot */
-var res;
-run;
-/* Since Shapiro-Wilk  < 0.05, reject Ho, residuals are NOT normally distributed*/
