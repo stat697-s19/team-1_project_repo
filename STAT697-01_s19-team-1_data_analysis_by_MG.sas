@@ -56,32 +56,24 @@ identify if they have the same chances of seeing the various types of Pokemon.
 ;
 
 title1 justify=left
-'Question: How often did Pokemon with the potential to have a max combat power 
- (CP) of at least 1200 appear for each type of Pokemon between the dates of 
- 9/2/2016 and 9/3/2016 in the North America?'
+'Question: How often did Pokemon with the potential to have a max combat power (CP) of at least 1200 appear for each type of Pokemon between the dates of 9/2/2016 and 9/3/2016 in the North America?'
 ;
 
 title2 justify=left
-'Rationale: A key aspect of Pokemon Go is to capture and assemble a balanced 
- team of Pokemon that you can use to take over gyms by fighting other Pokemon. 
- One of the primary metrics to assess if you captured a strong Pokemon is combat 
- power (CP). The higher the CP, the better suited it is for battle. Based on 
- my experience, a respectable CP starts around 1200.'
+'Rationale: A key aspect of Pokemon Go is to capture and assemble a balanced team of Pokemon that you can use to take over gyms by fighting other Pokemon. One of the primary metrics to assess if you captured a strong Pokemon is combat power (CP). The higher the CP, the better suited it is for battle. Based on my experience, a respectable CP starts around 1200.'
 ;
 
 footnote1 justify=left
-'Normal, Fire, & Fairy made up 61% of the sightings with a 1200 max CP potential 
- during these two days.'
+'Normal, Fire, & Fairy made up 61% of the sightings with a 1200 max CP potential during these two days.'
 ;
 
 footnote2 justify=left
-'The 3 rarest type of Pokemon with a potential of a 1200 max CP were Dragons, 
- Ghosts, and Ground. Combined they only made up less than 2% of Pokemon
- sightings with a max CP of 1200.'
+'The 3 rarest type of Pokemon with a potential of a 1200 max CP were Dragons, Ghosts, and Ground. Combined they only made up less than 2% of Pokemon sightings with a max CP of 1200.'
 ;
 
-proc freq data=poke_analytic_file (where=(&condition.) rename=(type1=Pokemon_type))order=freq;
-	table Pokemon_type/list out=type_cnt;
+proc freq data=poke_analytic_file (where =(&condition.) 
+    rename=(type1 = Pokemon_type))order=freq;
+        table Pokemon_type/list out=type_cnt;
 run;
 
 /*
@@ -98,20 +90,16 @@ title;
 footnote;
 
 title1 
-'Frequency of Appearance by Pokemon Type with Max CP Potential >= 1200 by 
- Continent';
+'Frequency of Appearance by Pokemon Type with Max CP Potential >= 1200 by Continent';
 
 title2 justify=left 
-'This chart is a visual representation of the previous table, but also includes 
- other continents for comparison.';
+'This chart is a visual representation of the previous table, but also includes other continents for comparison.';
 
 footnote1 justify=left
-'Normal type Pokemon had the most appearances with a Max CP of at least 1200 on
- all continents.';
+'Normal type Pokemon had the most appearances with a Max CP of at least 1200 on all continents.';
 
 footnote2 justify=left
-'The second and third most frequently spotted Pokemon with the criteria above 
- varies by continent.';
+'The second and third most frequently spotted Pokemon with the criteria above varies by continent.';
 ;
 
 proc sgplot data=poke_analytic_file (where=(maxcp>=1200));
@@ -161,32 +149,23 @@ data points provided in this data set.
 ;
 
 title1 justify=left
-'Question: What were the average weather conditions when Pokemon with a 
- potential max CP of 1200 or greater were sighted during 9/2/2016 through 
- 9/3/2016 in the North America?'
+'Question: What were the average weather conditions when Pokemon with a potential max CP of 1200 or greater were sighted during 9/2/2016 through 9/3/2016 in the North America?'
 ;
 
 title2 justify=left
-'Rationale: When the game was launched, it was rumored that certain Pokemon
- only appeared when real world conditions were met like a specific time of day 
- and weather conditions. This will help determine if some Pokemon can only be 
- seen or are more prevalent during specific weather conditions.'
+'Rationale: When the game was launched, it was rumored that certain Pokemon only appeared when real world conditions were met like a specific time of day and weather conditions. This will help determine if some Pokemon can only be seen or are more prevalent during specific weather conditions.'
 ;
 
 footnote1 justify=left
-'At first glance, temperature appears to have some distinguishable affects on
- Pokemon appearances based on type.'
+'At first glance, temperature appears to have some distinguishable affects on Pokemon appearances based on type.'
 ;
 
 footnote2 justify=left
-'For example, average temperature for ghost and ice type were lower compared to
- other tpyes, which aligns with the game environments where these Pokemone were
- found.'
+'For example, average temperature for ghost and ice type were lower compared to other tpyes, which aligns with the game environments where these Pokemone were found.'
 ;
 
 footnote3 justify=left
-'On the other hand, rock and fire types had the highest average temperature when
- they were sighted, which also aligns with in-game scenarios.'
+'On the other hand, rock and fire types had the highest average temperature when they were sighted, which also aligns with in-game scenarios.'
 ;
 
 proc sql;
@@ -224,35 +203,25 @@ title;
 footnote;
 
 title1 justify=left
-'There can be some validity to the theory that temperature can influence the 
- type of Pokemon based on weather and/or temperature by looking at some of the
- average temperatures when certain types appeared.'
+'There can be some validity to the theory that temperature can influence the type of Pokemon based on weather and/or temperature by looking at some of the average temperatures when certain types appeared.'
 ;
 
 title2 justify=left
-'As an additional analysis, a TTest was conducted between Fire and Ice type 
- Pokemon and the mean temperature of the two groups when they appeared to 
- determine if there was some validity to the claim above and statistically
- significant.'
+'As an additional analysis, a TTest was conducted between Fire and Ice type Pokemon and the mean temperature of the two groups when they appeared to determine if there was some validity to the claim above and statistically significant.'
 ;
 
 footnote1 justify=left
-'The p-value was <.0001, meaning that the mean difference between the two groups
- is significant. This is strong evidence that temperature is a factor when Ice 
- type Pokemon appear in colder weather and vice versa for Fire type in warmer
- temperatures.'
+'The p-value was <.0001, meaning that the mean difference between the two groups is significant. This is strong evidence that temperature is a factor when Ice type Pokemon appear in colder weather and vice versa for Fire type in warmer temperatures.'
 ;
 
 footnote2 justify=left
-'An increase sample size of Ice type Pokemon and additional mean temperature 
- data points of other types of Pokemon would provide more support to prove or 
- disprove the hypothesis that certain types of Pokemon are more likely to appear
- in certain weather conditions and temperature.'
+'An increase sample size of Ice type Pokemon and additional mean temperature data points of other types of Pokemon would provide more support to prove or disprove the hypothesis that certain types of Pokemon are more likely to appear in certain weather conditions and temperature.'
 ;
 
-proc ttest data=poke_analytic_file (where=(&condition. and type1 in ('Fire', 'Ice')));; 
-     class type1; 
-     var temperature; 
+proc ttest data=poke_analytic_file (where=(&condition. 
+	and type1 in ('Fire', 'Ice')));
+        class type1; 
+        var temperature; 
 run;
 
 title;
@@ -295,27 +264,19 @@ the model.
 ;
 
 title1 justify=left
-'Question: Which cities in the North America during 9/2/2016 to 9/3/2016 saw the 
-most Pokemon with a potential max CP of 1200 or greater for each type?'
+'Question: Which cities in the North America during 9/2/2016 to 9/3/2016 saw the most Pokemon with a potential max CP of 1200 or greater for each type?'
 ;
 
 title2 justify=left
-'Rationale: Geography influences the types of Pokemon that spawn in an area. For 
-example, beaches typically see a variety of water based Pokemon. This analysis 
-would help identify where certain Pokemon with a potential max CP of 1200 or 
-greater can be found.'
+'Rationale: Geography influences the types of Pokemon that spawn in an area. For example, beaches typically see a variety of water based Pokemon. This analysis would help identify where certain Pokemon with a potential max CP of 1200 or greater can be found.'
 ;
 
 footnote1 justify=left
-"New York seemed to have the most activity for each type of Pokemon with a 
- potential max CP of 1200. A possibly reason for this is due to New York's 
- diverse terrain (i.e. close to water, large urban park, etc) and population
- density."
+"New York seemed to have the most activity for each type of Pokemon with a potential max CP of 1200. A possibly reason for this is due to New York's diverse terrain (i.e. close to water, large urban park, etc) and population density."
 ;
 
 footnote2 justify=left
-'Interestingly, 40% of dragon (extremely rare) sightings occurred in New 
- York during these 2 days in North America.'
+'Interestingly, 40% of dragon (extremely rare) sightings occurred in New York during these 2 days in North America.'
 ;
 
 proc sql;
