@@ -90,16 +90,19 @@ title;
 footnote;
 
 title1 
-'Frequency of Appearance by Pokemon Type with Max CP Potential >= 1200 by Continent';
+'Frequency of Appearance by Pokemon Type with Max CP Potential >= 1200 by Continent'
+;
 
 title2 justify=left 
-'This chart is a visual representation of the previous table, but also includes other continents for comparison.';
+'This chart is a visual representation of the previous table, but also includes other continents for comparison.'
+;
 
 footnote1 justify=left
-'Normal type Pokemon had the most appearances with a Max CP of at least 1200 on all continents.';
+'Normal type Pokemon had the most appearances with a Max CP of at least 1200 on all continents.'
+;
 
 footnote2 justify=left
-'The second and third most frequently spotted Pokemon with the criteria above varies by continent.';
+'The second and third most frequently spotted Pokemon with the criteria above varies by continent.'
 ;
 
 proc sgplot data=poke_analytic_file (where=(maxcp>=1200));
