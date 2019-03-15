@@ -36,7 +36,7 @@ missing values in the columns from the tables being referenced in this analysis.
 
 Methodology: Use GROUP BY clause in proc sql to output the total number of 
 pokemon by city, and then use ORDER BY to sort the Total_pokemon variable in 
-descending order.Use PROC REPORT to output five observations of selected columns.
+descending order.Use PROC REPORT to output ten observations of selected columns.
 
 Followup Steps: More carefully clean values in order to filter out any possible
 illegal values, and better handle missing data.
@@ -56,7 +56,7 @@ proc sql;
 	;
 quit;
 
-*output 5 observations with four selected columns;
+*output 10 observations with four selected columns;
 proc report
 	data= poke_stat(obs=10)
 	;
