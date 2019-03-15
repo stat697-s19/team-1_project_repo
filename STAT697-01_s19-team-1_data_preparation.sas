@@ -242,7 +242,7 @@ proc sql;
             ,pressure	
             ,weatherIcon
             ,population_density	
-			,closetowater
+	    ,closetowater
             ,urban	
             ,suburban	
             ,midurban	
@@ -269,7 +269,7 @@ proc sql;
             ,pressure	
             ,weatherIcon
             ,population_density	
-			,closetowater
+	    ,closetowater
             ,urban	
             ,suburban	
             ,midurban	
@@ -304,7 +304,7 @@ proc sql;
     create table poke_analytic_file as
         select
             C._id as sighting_id
-			,C.pokemonID
+	    ,C.pokemonID
             ,C.continent
             ,C.city
             ,C.closetowater
@@ -317,8 +317,8 @@ proc sql;
             ,C.windspeed
             ,C.windbearing
             ,C.pressure
-			,A.*
-			,B.*
+	    ,A.*
+	    ,B.*
         from 
             combo_sights as C
         left join 
