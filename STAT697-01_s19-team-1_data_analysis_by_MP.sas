@@ -38,7 +38,7 @@ only based on two days data.
 
 Methodology: Use proc sql to create a temporary sorted table in descending
 order by MaxCP, and calculate sightings rate per each pokemon type. Then
-use proc report to print the first five rows of the sorted dataset.
+use proc report to print pokemons with highest Max CP in each pokemon type.
 
 Followup Steps: More carefully clean values in order to filter out any possible
 illegal values, and better handle missing data.
@@ -163,8 +163,8 @@ Limitations: Values of "Average % of sightings" equal to zero should
 be excluded from this analysis, since they are potentially missing data values.
 
 Methodology: Use proc sort on previous temporary table and sort by 
-sightings. Then use proc report to print the first five rows of the sorted 
-dataset.
+sightings. Then use proc report to print the rarest sightings per each pokemon
+type.
 
 Followup Steps: More carefully clean values in order to filter out any possible
 illegal values, and better handle missing data.
